@@ -1,7 +1,7 @@
 const socket = io("http://localhost:5000");
 
 const form = document.getElementById("form");
-const listaDados = document.getElementById("lista");
+const dataListElement = document.getElementById("lista");
 
 form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -10,18 +10,18 @@ form.addEventListener("submit", (e) => {
     const inputOcupada = document.getElementById("ocupada").checked;
     const inputPaga = document.getElementById("paga").checked;
 
-    var dados = { id: inputId, ocupada: inputOcupada, pago: inputPaga };
-    console.log(dados);
+    var data = { id: inputId, ocupada: inputOcupada, pago: inputPaga };
+    console.log(data);
 
-    socket.emit("envioForm", dados);
+    socket.emit("formData", data);
 });
 
-socket.on("exibeDados", (dados) => {
-    listaDados.innerHTML = "";
+socket.on("exibedata", (data) => {
+    dataListElement.innerHTML = "";
 
-    for (var i = 0; i < dados.length; i++) {
-        const tabela = document.createElement("p");
-        tabela.textContent = `Id: ${dados[i].id}, Ocupada: ${dados[i].ocupada}, Pago: ${dados[i].pago}`;
-        listaDados.appendChild(tabela);
+    for (var i = 0; i < data.length; i++) {
+        const clientSession = document.createElement("p");
+        clientSession.textContent = `Id: ${data[i].id}, Ocupada: ${data[i].ocupada}, Pago: ${data[i].pago}`;
+        dataListElement.appendChild(clientSession);
     }
 });
