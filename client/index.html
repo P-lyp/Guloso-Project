@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Client Websocket</title>
+        <link rel="stylesheet" href="/styles.css" />
+    </head>
+    <body>
+        <div class="principal">
+            <h1>Exemplo frontend farofa menu</h1>
+            <h2>Envio info mesas</h2>
+
+            <div class="container__input">
+                <form action="" id="form">
+                    <p>Id:</p>
+                    <input
+                        id="id"
+                        autocomplete="off"
+                        placeholder="Insira sua mensagem"
+                        type="number"
+                    />
+                    <p>Ocupada:</p>
+                    <input type="checkbox" id="ocupada" />
+                    <p>Paga:</p>
+                    <input type="checkbox" id="paga" />
+                    <button type="submit">Enviar</button>
+                </form>
+            </div>
+
+            <div id="lista"></div>
+        </div>
+
+        <script src="https://cdn.socket.io/4.1.2/socket.io.min.js"></script>
+        <script src="/main.js"></script>
+    </body>
+</html>
