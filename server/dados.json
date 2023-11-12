@@ -1,5 +1,0 @@
-[
-    { "id": 1, "ocupada": false, "pago": false },
-    { "id": 2, "ocupada": true, "pago": false },
-    { "id": 3, "ocupada": false, "pago": true }
-]
