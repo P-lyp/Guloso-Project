@@ -17,12 +17,12 @@ form.addEventListener("submit", (e) => {
 });
 
 socket.on("showData", (data) => {
+    console.log(data);
     dataListElement.innerHTML = "";
 
-    // TODO: Lógica para exibir os dados
-    // for (var i = 0; i < data.length; i++) {
-    //     const clientSession = document.createElement("p");
-    //     clientSession.textContent = `Id: ${data[i].id}, Ocupada: ${data[i].ocupada}, Pago: ${data[i].pago}`;
-    //     dataListElement.appendChild(clientSession);
-    // }
+    for (var i = 0; i < data.length; i++) {
+        const clientSession = document.createElement("p");
+        clientSession.textContent = `Id: ${data[i].id}, Ocupada: ${data[i].taken}, Pago: ${data[i].paid}`;
+        dataListElement.appendChild(clientSession);
+    }
 });
