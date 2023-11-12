@@ -10,18 +10,19 @@ form.addEventListener("submit", (e) => {
     const inputOcupada = document.getElementById("ocupada").checked;
     const inputPaga = document.getElementById("paga").checked;
 
-    var data = { id: inputId, ocupada: inputOcupada, pago: inputPaga };
+    var data = { id: inputId, taken: inputOcupada, paid: inputPaga };
     console.log(data);
 
     socket.emit("formData", data);
 });
 
-socket.on("exibedata", (data) => {
+socket.on("showData", (data) => {
     dataListElement.innerHTML = "";
 
-    for (var i = 0; i < data.length; i++) {
-        const clientSession = document.createElement("p");
-        clientSession.textContent = `Id: ${data[i].id}, Ocupada: ${data[i].ocupada}, Pago: ${data[i].pago}`;
-        dataListElement.appendChild(clientSession);
-    }
+    // TODO: Lógica para exibir os dados
+    // for (var i = 0; i < data.length; i++) {
+    //     const clientSession = document.createElement("p");
+    //     clientSession.textContent = `Id: ${data[i].id}, Ocupada: ${data[i].ocupada}, Pago: ${data[i].pago}`;
+    //     dataListElement.appendChild(clientSession);
+    // }
 });
