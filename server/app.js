@@ -4,8 +4,7 @@ const app = express();
 const server = http.createServer(app);
 const socketIo = require("socket.io"); //socket.io
 //bd
-const postgres = require("postgres");
-require("dotenv").config();
+const firebase = require("firebase");
 
 const io = socketIo(server, {
     cors: {
@@ -14,14 +13,59 @@ const io = socketIo(server, {
     },
 });
 
+const firebaseConfig = {
+    apiKey: "AIzaSyBPecOTsP6waFGBmZije0LA7Hk2enyo4OI",
+    authDomain: "guloso-85b45.firebaseapp.com",
+    projectId: "guloso-85b45",
+    storageBucket: "guloso-85b45.appspot.com",
+    messagingSenderId: "196006565625",
+    appId: "1:196006565625:web:3e68f2b3ccf95f06347428",
+};
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.firestore();
+const clientSessionCollection = db.collection("clientSession");
 // ROTAS
+
+const getDB = async () => {
+    try {
+        const snapshot = await clientSessionCollection
+            .orderBy("id", "asc")
+            .get();
+        const clientSession = snapshot.docs.map((doc) => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                taken: data.taken,
+                paid: data.paid,
+            };
+        });
+        return clientSession;
+    } catch (error) {
+        console.error("Erro ao obter dados:", error);
+        throw error;
+    }
+};
+
+const insertDB = async (data) => {
+    try {
+        await clientSessionCollection.add(data);
+
+        const updatedData = await getDB();
+        io.emit("showData", updatedData);
+    } catch (error) {
+        console.error("Erro ao inserir dados:", error);
+        throw error;
+    }
+};
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/app.html");
 });
 
-app.get("/dados", (req, res) => {
-    res.sendFile(__dirname + "/dados.json");
+app.get("/data", async (req, res) => {
+    const data = await getDB();
+    res.send(data);
 });
 // PORT
 const port = 5000;
@@ -30,49 +74,19 @@ server.listen(port, () => {
     console.log(`Server rodando na porta ${port}`);
 });
 
-let { PGHOST, PGDATABASE, PGUSER, PGPASSWORD, ENDPOINT_ID } = process.env;
-
-const sql = postgres({
-    host: PGHOST,
-    database: PGDATABASE,
-    username: PGUSER,
-    password: PGPASSWORD,
-    port: 5432,
-    ssl: "require",
-    connection: {
-        options: `project=${ENDPOINT_ID}`,
-    },
-});
-
-// COMANDOS SQL
-
-async function inserirSQL(dados) {
-    await sql`INSERT INTO mesas (id, ocupada, pago) VALUES (${dados.id}, ${dados.ocupada}, ${dados.pago})`;
-
-    const updatedData = await consultaSQL();
-    io.emit("exibeDados", updatedData);
-}
-
-async function consultaSQL() {
-    const result = await sql`SELECT * FROM mesas`;
-    return result;
-}
-
 // SOCKET
 
 io.on("connection", async (socket) => {
     console.log(`Usuário conectado`);
 
-    const dados = await consultaSQL();
-    io.emit("exibeDados", dados);
+    const initialData = await getDB();
+    io.emit("showData", initialData);
 
-    socket.on("envioForm", async (dados) => {
-        await inserirSQL(dados);
+    socket.on("formData", async (data) => {
+        await insertDB(data);
     });
 
     socket.on("disconnect", () => {
         console.log(`Usuário desconectado`);
     });
 });
-
-//TESTE
