@@ -17,7 +17,6 @@ form.addEventListener("submit", (e) => {
 });
 
 socket.on("showData", (data) => {
-    console.log(data);
     dataListElement.innerHTML = "";
 
     for (var i = 0; i < data.length; i++) {

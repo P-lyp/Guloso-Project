@@ -47,6 +47,18 @@ const getDB = async () => {
     }
 };
 
+const insertDB = async (data) => {
+    try {
+        await clientSessionCollection.add(data);
+
+        const updatedData = await getDB();
+        io.emit("showData", updatedData);
+    } catch (error) {
+        console.error("Erro ao inserir dados:", error);
+        throw error;
+    }
+};
+
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/app.html");
 });
@@ -67,11 +79,11 @@ server.listen(port, () => {
 io.on("connection", async (socket) => {
     console.log(`Usuário conectado`);
 
-    const data = await getDB();
-    io.emit("showData", data);
+    const initialData = await getDB();
+    io.emit("showData", initialData);
 
     socket.on("formData", async (data) => {
-        await insertSQL(data);
+        await insertDB(data);
     });
 
     socket.on("disconnect", () => {
