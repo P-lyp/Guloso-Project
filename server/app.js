@@ -24,21 +24,36 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.firestore();
-const clientSession = db.collection("clientSession");
+const clientSessionCollection = db.collection("clientSession");
 // ROTAS
+
+const getDB = async () => {
+    try {
+        const snapshot = await clientSessionCollection
+            .orderBy("id", "asc")
+            .get();
+        const clientSession = snapshot.docs.map((doc) => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                taken: data.taken,
+                paid: data.paid,
+            };
+        });
+        return clientSession;
+    } catch (error) {
+        console.error("Erro ao obter dados:", error);
+        throw error;
+    }
+};
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/app.html");
 });
 
 app.get("/data", async (req, res) => {
-    const snapshot = await clientSession.get();
-    clientSession = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        taken: doc.taken,
-        paid: doc.paid,
-    }));
-    res.send(clientSession);
+    const data = await getDB();
+    res.send(data);
 });
 // PORT
 const port = 5000;
@@ -52,7 +67,7 @@ server.listen(port, () => {
 io.on("connection", async (socket) => {
     console.log(`Usuário conectado`);
 
-    const data = await querySQL();
+    const data = await getDB();
     io.emit("showData", data);
 
     socket.on("formData", async (data) => {
