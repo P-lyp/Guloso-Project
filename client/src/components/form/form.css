@@ -1,0 +1,14 @@
+.container__input {
+    margin-top: 5vh;
+}
+
+#input {
+    width: 30vw;
+    text-align: center;
+}
+
+#form {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
