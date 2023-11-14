@@ -35,7 +35,7 @@ const getDB = async () => {
         const clientSession = snapshot.docs.map((doc) => {
             const data = doc.data();
             return {
-                id: doc.id,
+                id: data.id,
                 taken: data.taken,
                 paid: data.paid,
             };
@@ -67,6 +67,9 @@ app.get("/data", async (req, res) => {
     const data = await getDB();
     res.send(data);
 });
+
+//CRIAR ROTA PARA DAR POST NO BANCO DE DADOS
+
 // PORT
 const port = 5000;
 
