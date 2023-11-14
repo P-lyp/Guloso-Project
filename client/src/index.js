@@ -6,4 +6,3 @@ const root = document.getElementById("root");
 const rootContainer = ReactDOM.createRoot(root);
 rootContainer.render(<App />);
 
-console.log("FRONTEND MANDANDO VE");
