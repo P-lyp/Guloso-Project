@@ -2,13 +2,13 @@ import React, { useEffect } from "react";
 import io from "socket.io-client";
 
 function Form() {
-    const socket = io("http://localhost:5000");
   
     useEffect(() => {
-      const form = document.getElementById("form");
-      const listaDados = document.getElementById("lista");
+        const socket = io("http://localhost:5000");
+        const form = document.getElementById("form");
+        const listaDados = document.getElementById("lista");
   
-      form.addEventListener("submit", (e) => {
+        form.addEventListener("submit", (e) => {
         e.preventDefault();
   
         const inputId = document.getElementById("id").valueAsNumber;
@@ -31,7 +31,6 @@ function Form() {
 
 
     return(
-        
         <div>
             <div className="container__input">
                 <form id="form">
@@ -50,7 +49,6 @@ function Form() {
             </div>
             <div id="lista"></div>
         </div>
-        
     );
 }
 
