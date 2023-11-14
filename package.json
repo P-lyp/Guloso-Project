@@ -1,0 +1,13 @@
+{
+    "name": "guloso-project",
+    "version": "1.0.0",
+    "scripts": {
+        "start": "concurrently \"cd server && npm start\" \"cd client/src && npm start\""
+    },
+    "dependencies": {
+        "concurrently": "^8.2.2"
+    },
+    "devDependencies": {
+        "@babel/plugin-proposal-private-property-in-object": "^1.0.10"
+    }
+}
