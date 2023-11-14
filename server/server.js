@@ -26,7 +26,9 @@ const port = config.serverConfig.port;
 
 app.use("/", routes);
 
-io.on("connection", handleConnection);
+io.on("connection", (socket) => {
+    handleConnection(socket, io);
+});
 
 server.listen(port, () => {
     console.log(`Server rodando na porta ${port}`);

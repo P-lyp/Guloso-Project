@@ -1,6 +1,6 @@
 const { getDB, insertDB } = require("./dbModule");
 
-const handleConnection = async (socket) => {
+const handleConnection = async (socket, io) => {
     console.log("Usuário conectado");
 
     const initialData = await getDB();
