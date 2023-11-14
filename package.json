@@ -8,6 +8,6 @@
         "concurrently": "^8.2.2"
     },
     "devDependencies": {
-        "@babel/plugin-proposal-private-property-in-object": "^1.0.10"
+        "@babel/plugin-proposal-private-property-in-object": ""
     }
 }
