@@ -23,9 +23,21 @@ const getDB = async () => {
     }
 };
 
+const generateNewId = async () => {
+    const snapshot = await clientSessionCollection.orderBy("id", "asc").get();
+    const clientSession = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return data;
+    });
+
+    const newId = clientSession.length + 1;
+    return newId;
+};
+
 const insertDB = async (data) => {
     try {
-        await clientSessionCollection.add(data);
+        const newId = await generateNewId();
+        await clientSessionCollection.doc(`session${newId}`).set(data);
     } catch (error) {
         console.error("Erro ao inserir dados:", error);
         throw error;
