@@ -26,13 +26,33 @@ const getDB = async () => {
 const insertDB = async (data) => {
     try {
         await clientSessionCollection.add(data);
-
-        const updatedData = await getDB();
-        io.emit("showData", updatedData);
     } catch (error) {
         console.error("Erro ao inserir dados:", error);
         throw error;
     }
 };
 
-module.exports = { getDB, insertDB };
+const updateDB = async (data) => {
+    const id = data.id.toString();
+
+    try {
+        await clientSessionCollection.doc(id).update(data);
+    } catch (error) {
+        console.error("Erro ao atualizar dados: ", error);
+        throw error;
+    }
+};
+
+// TODO: INVÉS DE IMPLEMENTAR UM DELETE, FAZER UM CLEAR NA SESSÃO PARA SIMULAR QUE UMA MESA FOI ESVAZIADA
+// const deleteDB = async (data) => {
+//     const id = data.id.toString();
+
+//     try {
+//         await clientSessionCollection.doc(id).delete();
+//     } catch (error) {
+//         console.error("Erro ao deletar dados: ", error);
+//         throw error;
+//     }
+// };
+
+module.exports = { getDB, insertDB, updateDB };
