@@ -10,11 +10,7 @@ const getDB = async () => {
             .get();
         const clientSession = snapshot.docs.map((doc) => {
             const data = doc.data();
-            return {
-                id: data.id,
-                taken: data.taken,
-                paid: data.paid,
-            };
+            return data;
         });
         return clientSession;
     } catch (error) {
@@ -55,6 +51,19 @@ const updateDB = async (data) => {
     }
 };
 
+const addOrder = async (data, sessionId) => {
+    // const data = [{ food: "Hamburguer", price: 20 }];
+
+    try {
+        clientSessionCollection.doc(sessionId).update({
+            orders: firebase.firestore.FieldValue.arrayUnion(...data),
+        });
+    } catch (error) {
+        console.error("Erro ao adicionar pedido: ", error);
+        throw error;
+    }
+};
+
 // TODO: INVÉS DE IMPLEMENTAR UM DELETE, FAZER UM CLEAR NA SESSÃO PARA SIMULAR QUE UMA MESA FOI ESVAZIADA
 // const deleteDB = async (data) => {
 //     const id = data.id.toString();
@@ -67,4 +76,4 @@ const updateDB = async (data) => {
 //     }
 // };
 
-module.exports = { getDB, insertDB, updateDB };
+module.exports = { getDB, insertDB, updateDB, addOrder };
