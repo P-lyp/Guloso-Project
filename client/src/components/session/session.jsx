@@ -3,7 +3,8 @@ import "./session.css";
 import paidIcon from "../../assets/Done.svg";
 import { io } from "socket.io-client";
 
-const socket = io("https://guloso-server-alpha-1-2.onrender.com");
+const server = require('../../connection-properties.json')
+const socket = io(server.server);
 
 function Session() {
     const [data, setData] = useState(null);
@@ -17,8 +18,6 @@ function Session() {
             socket.off("dadosAtualizados");
         };
     }, []);
-
-    console.table(data);
 
     return (
         // ANTIGA FORMA

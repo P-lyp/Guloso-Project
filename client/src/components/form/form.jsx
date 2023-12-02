@@ -3,7 +3,8 @@ import io from "socket.io-client";
 
 function Form() {
     useEffect(() => {
-        const socket = io("https://guloso-server-alpha-1-2.onrender.com");
+        const server = require('../../connection-properties.json')
+        const socket = io(server.server);
         const form = document.getElementById("form");
         const listaDados = document.getElementById("lista");
 
