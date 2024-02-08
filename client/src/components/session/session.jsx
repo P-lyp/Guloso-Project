@@ -1,21 +1,19 @@
 import React, { useEffect, useState } from "react";
 import "./session.css";
 import paidIcon from "../../assets/Done.svg";
-import { io } from "socket.io-client";
 
-const server = require('../../connection-properties.json')
-const socket = io(server.server);
+import socketServer from "../../socket";
 
 function Session() {
     const [data, setData] = useState(null);
 
     useEffect(() => {
-        socket.on("showData", (data) => {
+        socketServer.on("showData", (data) => {
             setData(data);
         });
 
         return () => {
-            socket.off("dadosAtualizados");
+            socketServer.off("dadosAtualizados");
         };
     }, []);
 

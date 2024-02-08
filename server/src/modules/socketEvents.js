@@ -11,7 +11,8 @@ const handleConnection = async (socket, io) => {
     console.log("Usuário conectado");
 
     socket.on("formData", async (data) => {
-        await insertDB(data);
+        console.log({ id: data.inputId, taken: data.inputOcupada, paid: data.inputPaga });
+        await insertDB({ id: data.inputId, taken: data.inputOcupada, paid: data.inputPaga });
         refreshData();
     });
 
