@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import socketServer from "../../socket";
 
 import Input from "./Input/Input";
 
-import "./form.css";
+import "./Form.css";
 
 export default function Form() {
     const [inputId, setInputId] = useState("");

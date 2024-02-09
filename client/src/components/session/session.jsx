@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./session.css";
+import "./Session.css";
 import paidIcon from "../../assets/Done.svg";
 
 import socketServer from "../../socket";
