@@ -1,5 +1,5 @@
 import React from "react";
-import Session from "./components/Sessiona/Session.jsx";
+import Session from "./components/Session/Session.jsx";
 import Form from "./components/Form/Form.jsx";
 import "./App.css";
 import DataList from "./components/DataList/DataList.jsx";
