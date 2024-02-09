@@ -1,6 +1,6 @@
 import React from "react";
 import Session from "./components/Session/Session.jsx";
-import Form from "./components/form/Form.jsx";
+import Form from "./components/Form/Form.jsx";
 import "./App.css";
 import DataList from "./components/DataList/DataList.jsx";
 
