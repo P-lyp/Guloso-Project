@@ -11,8 +11,6 @@ export default function Form() {
     const [inputOcupada, setInputOcupada] = useState(false);
     const [inputPaga, setInputPaga] = useState(false);
 
-    // const [socket, setSocket] = useState(null);
-
     function handleSubmit(event) {
         event.preventDefault();
         if (socketServer) {
@@ -24,31 +22,6 @@ export default function Form() {
             setInputPaga(false);
         }
     }
-
-    // useEffect(() => {
-    //     const form = document.getElementById("form");
-    //     const listaDados = document.getElementById("lista");
-
-    //     form.addEventListener("submit", (e) => {
-    //         e.preventDefault();
-
-    //         const inputId = document.getElementById("id").valueAsNumber;
-    //         const inputOcupada = document.getElementById("ocupada").checked;
-    //         const inputPaga = document.getElementById("paga").checked;
-
-    //         var data = { id: inputId, taken: inputOcupada, paid: inputPaga };
-
-    //         socket.emit("formData", data);
-    //     });
-
-    //     socket.on("showData", (data) => {
-    //         for (var i = 0; i < data.length; i++) {
-    //             const tabela = document.createElement("p");
-    //             tabela.textContent = `Id: ${data[i].id}, Ocupada: ${data[i].taken}, Pago: ${data[i].paid}`;
-    //             listaDados.appendChild(tabela);
-    //         }
-    //     });
-    // }, []);
 
     return (
         <div>
