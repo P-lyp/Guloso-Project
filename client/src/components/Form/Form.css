@@ -1,0 +1,10 @@
+.container-form {
+    margin-top: 5vh;
+}
+
+#form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
