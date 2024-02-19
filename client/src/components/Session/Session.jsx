@@ -18,19 +18,6 @@ function Session() {
     }, []);
 
     return (
-        // ANTIGA FORMA
-
-        // <div className="session">
-        //     <h1 className="title">Lista de mesas</h1>
-        //     <div className="session-list">
-        //     {dados.map(localSession => (
-        //         <SessionItem key={localSession.id} list={localSession.id} ocupada={localSession.ocupada} pago={localSession.pago}/>
-        //     ))}
-        //     </div>
-        // </div>
-
-        // NOVA FORMA
-
         <div className="session">
             <h1 className="title">Lista de mesas</h1>
             <div className="session-list">
@@ -58,8 +45,18 @@ function SessionItem({ list, ocupada, pago }) {
     };
     const sessionItem = { backgroundColor: ocupada ? "#EBE3D5" : "#B0A695" };
 
+function deleteSession() {
+    const confirmacao = window.confirm('Deseja remover esse item?');
+    if (confirmacao) {
+        socketServer.emit("deleteSession", list);
+        console.log(list)
+    } else {
+        console.log("Não foi possível remover o item!")
+    }
+} 
+
     return (
-        <div className="session-item" style={sessionItem}>
+        <div className="session-item" style={sessionItem} onClick={deleteSession}> 
             <p>{list}</p>
             {pago && <img src={paidIcon} alt="Pago" style={badgeStyle} />}
         </div>

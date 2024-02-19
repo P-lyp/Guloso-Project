@@ -8,6 +8,6 @@ module.exports = {
         appId: "1:196006565625:web:3e68f2b3ccf95f06347428",
     },
     serverConfig: {
-        port: 5000,
+        port: 5001,
     },
 };

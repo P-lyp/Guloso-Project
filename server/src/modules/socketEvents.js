@@ -22,9 +22,9 @@ const handleConnection = async (socket, io) => {
     });
 
     // TODO: INVÉS DE IMPLEMENTAR UM DELETE, FAZER UM CLEAR NA SESSÃO PARA SIMULAR QUE UMA MESA FOI ESVAZIADA
-    // socket.on("deleteSession", async (data) => {
-    //     await updateDB(data);
-    // });
+    socket.on("deleteSession", async (data) => {
+        await updateDB(data);
+    });
 
     socket.on("disconnect", () => {
         console.log(`Usuário desconectado`);
