@@ -5,6 +5,7 @@ const { getDB, insertDB } = require("../modules/dbModule");
 const router = express.Router();
 
 router.get("/", (req, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
     const filePath = path.join(__dirname, "../public/app.html");
     res.sendFile(filePath);
 });
