@@ -15,17 +15,20 @@ import { Server } from "socket.io";
 import { router } from "./src/routes/routes.js";
 import { handleConnection } from "./src/modules/socketEvents.js";
 //
+import { serverConfig } from "./config.js";
+//
+
 const app = express();
 const server = http.createServer(app);
 
-const io = Server(server, {
+const io = new Server(server, {
     cors: {
         origin: "*",
         methods: ["GET", "POST"],
     },
 });
 
-const port = config.serverConfig.port;
+const port = serverConfig;
 
 app.use("/", router);
 

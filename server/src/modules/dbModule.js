@@ -78,10 +78,8 @@ export const addOrder = async (data, sessionId) => {
 
 // SUPABASE
 
-module.exports = { fetchTableData };
-
 fetchTableData();
-async function fetchTableData() {
+export async function fetchTableData() {
     const { data, error } = await supabase.from("tables").select();
 
     if (error) {
