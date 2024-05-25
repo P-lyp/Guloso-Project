@@ -1,13 +1,13 @@
-const firebase = require("firebase");
+// const firebase = require("firebase");
 
-const db = firebase.firestore();
-const clientSessionCollection = db.collection("clientSession");
+// const db = firebase.firestore();
+// const clientSessionCollection = db.collection("clientSession");
 
-const getDB = async () => {
+import { supabase } from "./supabaseModule.js";
+
+export const getDB = async () => {
     try {
-        const snapshot = await clientSessionCollection
-            .orderBy("id", "asc")
-            .get();
+        const snapshot = await clientSessionCollection.orderBy("id", "asc").get();
         const clientSession = snapshot.docs.map((doc) => {
             const data = doc.data();
             return data;
@@ -30,7 +30,7 @@ const generateNewId = async () => {
     return newId;
 };
 
-const insertDB = async (data) => {
+export const insertDB = async (data) => {
     try {
         const newId = await generateNewId();
         await clientSessionCollection.doc(`session${newId}`).set(data);
@@ -40,7 +40,7 @@ const insertDB = async (data) => {
     }
 };
 
-const updateDB = async (data) => {
+export const updateDB = async (data) => {
     const id = data.id.toString();
 
     try {
@@ -51,7 +51,7 @@ const updateDB = async (data) => {
     }
 };
 
-const addOrder = async (data, sessionId) => {
+export const addOrder = async (data, sessionId) => {
     // const data = [{ food: "Hamburguer", price: 20 }];
 
     try {
@@ -76,6 +76,54 @@ const addOrder = async (data, sessionId) => {
 //     }
 // };
 
-//teste
+// SUPABASE
 
-module.exports = { getDB, insertDB, updateDB, addOrder };
+module.exports = { fetchTableData };
+
+fetchTableData();
+async function fetchTableData() {
+    const { data, error } = await supabase.from("tables").select();
+
+    if (error) {
+        console.error("Error fetching data:", error);
+        return;
+    }
+
+    console.log(data);
+}
+
+// async function createTable() {
+//     const { error } = await supabase.from("tables").insert({});
+
+//     if (error) {
+//         console.error(error);
+//         return;
+//     }
+// } // createTable()
+
+// async function occupyTable(dinersQnt, tableId) {
+//     const { error } = await supabase
+//         .from("tables")
+//         .update({ available: false, diners: dinersQnt })
+//         .eq("id", tableId);
+// } //  occupyTable(quantidade de pessoas na mesa, id da mesa)
+
+// async function newOrder(tableId) {
+//     const { error } = await supabase.from("order").insert({ table_id: tableId });
+
+//     if (error) {
+//         console.error(error);
+//         return;
+//     }
+// } // newOrder(id da mesa)
+
+// async function addMenuItem(orderId, menuId) {
+//     const { error } = await supabase
+//         .from("order_items")
+//         .insert({ order_id: orderId, menu_id: menuId });
+
+//     if (error) {
+//         console.error(error);
+//         return;
+//     }
+// } // addMenuItem(id do pedido, id do item)

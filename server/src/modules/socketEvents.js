@@ -1,6 +1,6 @@
-const { getDB, insertDB, updateDB } = require("./dbModule");
+import { getDB, insertDB, updateDB } from "./dbModule.js";
 
-const handleConnection = async (socket, io) => {
+export const handleConnection = async (socket, io) => {
     async function refreshData() {
         const updatedData = await getDB();
         io.emit("showData", updatedData);
@@ -30,5 +30,3 @@ const handleConnection = async (socket, io) => {
         console.log(`Usuário desconectado`);
     });
 };
-
-module.exports = { handleConnection };

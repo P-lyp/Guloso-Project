@@ -1,8 +1,8 @@
-const express = require("express");
-const path = require("path");
-const { getDB, insertDB } = require("../modules/dbModule");
+import express from "express";
+import path from "path";
+import { getDB, insertDB } from "../modules/dbModule.js";
 
-const router = express.Router();
+export const router = express.Router();
 
 router.get("/", (req, res) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -19,5 +19,3 @@ router.post("/data", async (req, res) => {
     const data = req.body;
     await insertDB(data);
 });
-
-module.exports = router;
