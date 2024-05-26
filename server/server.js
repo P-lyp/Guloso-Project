@@ -4,7 +4,8 @@ import http from "http";
 import { Server } from "socket.io";
 //
 import { router } from "./src/routes/routes.js";
-// INSERIR COMANDOS NOVOS DO BD -> import { handleConnection } from "./src/modules/socketEvents.js";
+//
+import { handleConnection } from "./src/modules/socketEvents.js";
 import { serverConfig } from "./config.js";
 //
 
@@ -22,9 +23,9 @@ const port = serverConfig.port;
 
 app.use("/", router);
 
-// io.on("connection", (socket) => {
-//     handleConnection(socket, io);
-// });
+io.on("connection", (socket) => {
+    handleConnection(socket, io);
+});
 
 server.listen(port, () => {
     console.log(`Server rodando na porta ${port}`);

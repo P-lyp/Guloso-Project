@@ -1,5 +1,5 @@
 import express from "express";
-import { getTables } from "../modules/dbModule.js";
+import { fetchTables } from "../modules/dbModule.js";
 
 export const router = express.Router();
 
@@ -8,7 +8,7 @@ router.get("/", (req, res) => {
 });
 
 router.get("/data", async (req, res) => {
-    const data = await getTables();
+    const data = await fetchTables();
     res.send(data);
 });
 

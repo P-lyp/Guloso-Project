@@ -1,6 +1,6 @@
 import { supabase } from "./supabaseModule.js";
 
-export async function getTables() {
+export async function fetchTables() {
     const { data, error } = await supabase.from("tables").select();
 
     if (error) {
@@ -8,42 +8,56 @@ export async function getTables() {
         return;
     }
 
-    console.table(data);
+    return data;
 }
-getTables();
+fetchTables();
 
-// async function createTable() {
-//     const { error } = await supabase.from("tables").insert({});
+export async function updateTableStatus(receivedData) {
+    // Data tem que ter: quantidade de pessoas e ID da mesa
+    const { error } = await supabase
+        .from("tables")
+        .update({ tables_available: false, tables_diners: data.dinersQnt })
+        .eq("id", data.tableId);
 
-//     if (error) {
-//         console.error(error);
-//         return;
-//     }
-// } // createTable()
+    if (error) {
+        console.error(error);
+        return;
+    }
+}
 
-// async function occupyTable(dinersQnt, tableId) {
-//     const { error } = await supabase
-//         .from("tables")
-//         .update({ available: false, diners: dinersQnt })
-//         .eq("id", tableId);
-// } //  occupyTable(quantidade de pessoas na mesa, id da mesa)
+export async function createOrder(receivedData) {
+    // Data tem que ter: ID da mesa
+    const { data: result, error } = await supabase
+        .from("order")
+        .insert({ tables_id: receivedData.tableId })
+        .select();
 
-// async function newOrder(tableId) {
-//     const { error } = await supabase.from("order").insert({ table_id: tableId });
+    if (error) {
+        console.error(error);
+        return;
+    }
 
-//     if (error) {
-//         console.error(error);
-//         return;
-//     }
-// } // newOrder(id da mesa)
+    const newOrderId = result[0].order_id; // atribui o id do pedido com o retorno da consulta após inserir no BD
+    const menuId = receivedData.menuId; // atribui o id que foi passado pelo parametro da função de criar pedido
 
-// async function addMenuItem(orderId, menuId) {
-//     const { error } = await supabase
-//         .from("order_items")
-//         .insert({ order_id: orderId, menu_id: menuId });
+    addOrderItems(newOrderId, menuId);
 
-//     if (error) {
-//         console.error(error);
-//         return;
-//     }
-// } // addMenuItem(id do pedido, id do item)
+    async function addOrderItems(orderId, menuId) {
+        // Data tem que ter: Id do cardápio e Id da mesa
+        const { error } = await supabase
+            .from("orderitems")
+            .insert({ order_id: orderId, menu_id: menuId });
+
+        if (error) {
+            console.error(error);
+            return;
+        }
+    }
+}
+
+// const exemple = {
+//     tableId: 2,
+//     menuId: 1,
+// };
+
+// createOrder(exemple);

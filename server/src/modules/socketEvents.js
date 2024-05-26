@@ -1,32 +1,26 @@
-// import { getDB, insertDB, updateDB } from "./dbModule.js";
+import { fetchTables, updateTableStatus, createOrder } from "./dbModule.js";
 
-// export const handleConnection = async (socket, io) => {
-//     async function refreshData() {
-//         const updatedData = await getDB();
-//         io.emit("showData", updatedData);
-//     }
+export const handleConnection = async (socket, io) => {
+    console.log("Usuário conectado");
+    refreshTablesData();
 
-//     refreshData();
+    async function refreshTablesData() {
+        const updatedTablesData = await fetchTables();
+        console.log(updatedTablesData);
+        io.emit("refreshTablesData", updatedTablesData);
+    }
 
-//     console.log("Usuário conectado");
+    socket.on("updateTableStatus", async (data) => {
+        await updateTableStatus(data);
+        refreshTablesData();
+    });
 
-//     socket.on("formData", async (data) => {
-//         console.log({ id: data.inputId, taken: data.inputOcupada, paid: data.inputPaga });
-//         await insertDB({ id: data.inputId, taken: data.inputOcupada, paid: data.inputPaga });
-//         refreshData();
-//     });
+    socket.on("createOrder", async (data) => {
+        await createOrder(data);
+        refreshTablesData();
+    });
 
-//     socket.on("updateSession", async (data) => {
-//         await updateDB(data);
-//         refreshData();
-//     });
-
-//     // TODO: INVÉS DE IMPLEMENTAR UM DELETE, FAZER UM CLEAR NA SESSÃO PARA SIMULAR QUE UMA MESA FOI ESVAZIADA
-//     socket.on("deleteSession", async (data) => {
-//         await updateDB(data);
-//     });
-
-//     socket.on("disconnect", () => {
-//         console.log(`Usuário desconectado`);
-//     });
-// };
+    socket.on("disconnect", () => {
+        console.log(`Usuário desconectado`);
+    });
+};
