@@ -1,6 +1,6 @@
 {
     "name": "guloso-server",
-    "version": "v1.2-alpha",
+    "version": "1.2",
     "description": "",
     "type": "module",
     "main": "server.js",
