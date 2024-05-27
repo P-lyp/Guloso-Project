@@ -1,4 +1,4 @@
-import { fetchTables, updateTableStatus, createOrder } from "./dbModule.js";
+import { fetchTables, updateTableStatus, createOrder, fetchTableOrders } from "./dbModule.js";
 
 export const handleConnection = async (socket, io) => {
     refreshTablesData();
@@ -7,6 +7,13 @@ export const handleConnection = async (socket, io) => {
         const updatedTablesData = await fetchTables();
         io.emit("refreshTablesData", updatedTablesData);
     }
+
+    // Recebe o ID da mesa, filtra e retorna o resultado
+    socket.on("checkTableOrders", async (data) => {
+        const tableId = data.tables_id;
+        const updatedOrdersData = await fetchTableOrders(tableId);
+        io.emit("refreshTableOrders", updatedOrdersData);
+    });
 
     socket.on("updateTableStatus", async (data) => {
         await updateTableStatus(data);

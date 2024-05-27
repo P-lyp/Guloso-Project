@@ -4,20 +4,36 @@ export async function fetchTables() {
     const { data, error } = await supabase.from("tables").select();
 
     if (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching tables:", error);
         return;
     }
 
     return data;
 }
-fetchTables();
+
+export async function fetchTableOrders(tableId) {
+    const { data, error } = await supabase.from("order").select().eq("tables_id", tableId);
+
+    if (error) {
+        console.log("Erro fetching orders: ", error);
+        return;
+    }
+
+    return data;
+}
+
+// const teste = {
+//     tableId: 2,
+// };
+
+// fetchTableOrders(teste);
 
 export async function updateTableStatus(receivedData) {
     // Data tem que ter: quantidade de pessoas e ID da mesa
     const { error } = await supabase
         .from("tables")
         .update({ tables_available: false, tables_diners: data.dinersQnt })
-        .eq("id", data.tableId);
+        .eq("id", receivedData.tableId);
 
     if (error) {
         console.error(error);
