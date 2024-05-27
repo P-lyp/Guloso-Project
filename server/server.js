@@ -24,6 +24,8 @@ const port = serverConfig.port;
 app.use("/", router);
 
 io.on("connection", (socket) => {
+    console.log("Usuário conectado");
+
     handleConnection(socket, io);
 });
 

@@ -1,12 +1,10 @@
 import { fetchTables, updateTableStatus, createOrder } from "./dbModule.js";
 
 export const handleConnection = async (socket, io) => {
-    console.log("Usuário conectado");
     refreshTablesData();
 
     async function refreshTablesData() {
         const updatedTablesData = await fetchTables();
-        console.log(updatedTablesData);
         io.emit("refreshTablesData", updatedTablesData);
     }
 
