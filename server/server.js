@@ -1,5 +1,6 @@
 import express from "express";
 import http from "http";
+import cors from "cors";
 //
 import { Server } from "socket.io";
 //
@@ -20,6 +21,14 @@ const io = new Server(server, {
 });
 
 const port = serverConfig.port;
+
+app.use(
+    cors({
+        origin: "*", // Allow all origins
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow specified methods
+        allowedHeaders: ["Content-Type", "Authorization"], // Allow specified headers
+    })
+);
 
 app.use("/", router);
 
