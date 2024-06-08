@@ -1,28 +1,28 @@
 import {
-    fetchTables,
+    selectTables,
     updateTableStatus,
-    createOrder,
-    fetchTableOrders,
-    createTable,
+    insertOrder,
+    selectTableOrders,
+    insertTable,
 } from "./dbModule.js";
 
 export const handleConnection = async (socket, io) => {
     refreshTablesData();
 
     async function refreshTablesData() {
-        const updatedTablesData = await fetchTables();
+        const updatedTablesData = await selectTables();
         io.emit("refreshTablesData", updatedTablesData);
     }
 
     socket.on("createTable", async () => {
-        await createTable();
-        refreshTablesData;
+        await insertTable();
+        refreshTablesData();
     });
 
     // Recebe o ID da mesa, filtra e retorna o resultado
     socket.on("checkTableOrders", async (data) => {
         const tableId = data.tables_id;
-        const updatedOrdersData = await fetchTableOrders(tableId);
+        const updatedOrdersData = await selectTableOrders(tableId);
         io.emit("refreshTableOrders", updatedOrdersData);
     });
 
@@ -32,7 +32,7 @@ export const handleConnection = async (socket, io) => {
     });
 
     socket.on("createOrder", async (data) => {
-        await createOrder(data);
+        await insertOrder(data);
         refreshTablesData();
     });
 

@@ -1,10 +1,10 @@
 import express from "express";
-import { fetchTables } from "../modules/dbModule.js";
+import { selectTables } from "../modules/dbModule.js";
 
 export const router = express.Router();
 
 router.get("/data", async (req, res) => {
-    const data = await fetchTables();
+    const data = await selectTables();
     res.send(data);
 });
 

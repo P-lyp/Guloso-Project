@@ -1,6 +1,6 @@
 import { supabase } from "./supabaseModule.js";
 
-export async function fetchTables() {
+export async function selectTables() {
     const { data, error } = await supabase.from("tables").select();
 
     if (error) {
@@ -11,7 +11,7 @@ export async function fetchTables() {
     return data;
 }
 
-export async function fetchTableOrders(tableId) {
+export async function selectTableOrders(tableId) {
     const { data, error } = await supabase.from("order").select().eq("tables_id", tableId);
 
     if (error) {
@@ -35,7 +35,7 @@ export async function updateTableStatus(receivedData) {
     }
 }
 
-export async function createOrder(receivedData) {
+export async function insertOrder(receivedData) {
     // Data tem que ter: ID da mesa
     const { data: result, error } = await supabase
         .from("order")
@@ -50,9 +50,9 @@ export async function createOrder(receivedData) {
     const newOrderId = result[0].order_id; // atribui o id do pedido com o retorno da consulta após inserir no BD
     const menuId = receivedData.menuId; // atribui o id que foi passado pelo parametro da função de criar pedido
 
-    addOrderItems(newOrderId, menuId);
+    insertOrderItems(newOrderId, menuId);
 
-    async function addOrderItems(orderId, menuId) {
+    async function insertOrderItems(orderId, menuId) {
         // Data tem que ter: Id do cardápio e Id da mesa
         const { error } = await supabase
             .from("orderitems")
@@ -65,7 +65,7 @@ export async function createOrder(receivedData) {
     }
 }
 
-export async function createTable() {
+export async function insertTable() {
     const { error } = await supabase.from("tables").insert({});
 
     if (error) {
