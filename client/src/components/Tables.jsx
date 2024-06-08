@@ -62,13 +62,13 @@ const Tables = () => {
                 {tables.map((table) => (
                     <Col
                         key={table.tables_id}
-                        span={12}
+                        span={6}
                     >
                         <Card
                             title={`Mesa ${table.tables_id}`}
-                            bordered={false}
                             onClick={() => handleCardClick(table)}
-                            style={{ cursor: "pointer" }}
+                            style={{ height: "300px" }}
+                            hoverable={true}
                             extra={
                                 <CloseOutlined
                                     onClick={(e) => {
