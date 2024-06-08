@@ -56,6 +56,8 @@ const Tables = () => {
         return <Spin />;
     }
 
+    const headerStyle = (table) => ({ header:{backgroundColor: table.tables_available ?  '#306B34' : '#BF0603', color: '#EFF1F3' }})
+
     return (
         <>
             <Row gutter={[16, 16]}>
@@ -65,9 +67,14 @@ const Tables = () => {
                         span={6}
                     >
                         <Card
-                            title={`Mesa ${table.tables_id}`}
+                            title={
+                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                    <span style={{ fontSize: '24px' }}>{table.tables_id}</span>
+                                </div>
+                            }
                             onClick={() => handleCardClick(table)}
-                            style={{ height: "300px" }}
+                            style={{ height: "300px", CardHeader: { backgroundColor: '#your-color-here' } }}
+                            styles={headerStyle(table)}
                             hoverable={true}
                             extra={
                                 <CloseOutlined
@@ -78,6 +85,7 @@ const Tables = () => {
                                 />
                             }
                         >
+
                             <Meta description={`Status: ${table.tables_available}`} />
                         </Card>
                     </Col>
