@@ -74,15 +74,11 @@ export async function insertTable() {
     }
 }
 
-export async function deleteTable(receivedData) {
-    const { error } = await supabase.from("tables").delete().eq("tables_id", receivedData.tableId);
+export async function deleteTable(tableId) {
+    const { error } = await supabase.from("tables").delete().eq("tables_id", tableId);
 
     if (error) {
         console.error(`ERRO AO DELETAR MESA ${error}`);
         return;
     }
 }
-
-// const teste = {
-//     tableId: 9,
-// };

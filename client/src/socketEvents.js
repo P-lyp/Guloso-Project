@@ -1,7 +1,7 @@
 import io from "socket.io-client";
 
 const server = require("./connection-properties.json");
-const socketServer = io(server["online"]);
+const socketServer = io(server["local"]);
 
 export const wsRefreshTablesData = async (callback) => {
     socketServer.on("refreshTablesData", (data) => {

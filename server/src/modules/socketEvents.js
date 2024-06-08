@@ -4,6 +4,7 @@ import {
     insertOrder,
     selectTableOrders,
     insertTable,
+    deleteTable,
 } from "./dbModule.js";
 
 export const handleConnection = async (socket, io) => {
@@ -41,10 +42,9 @@ export const handleConnection = async (socket, io) => {
     });
 
     socket.on("deleteTable", async (data) => {
-        console.log("data")
+        console.log(data);
         const { tableId } = data;
         await deleteTable(tableId);
         refreshTablesData();
     });
-    
 };
