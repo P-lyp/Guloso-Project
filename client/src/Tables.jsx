@@ -1,10 +1,12 @@
 // src/components/Tables.js
 import io from "socket.io-client";
+import { useEffect, useState } from "react";
+import { Card, Col, Row, Spin, Modal, List } from "antd";
+
 const socketServer = io("localhost:5001");
 // const socketServer = io("https://guloso-server-alpha-1-2.onrender.com");
 
-import { useEffect, useState } from "react";
-import { Card, Col, Row, Spin, Modal, List } from "antd";
+
 const { Meta } = Card;
 
 const Tables = () => {
