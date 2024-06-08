@@ -22,3 +22,7 @@ export const wsCheckTableOrders = async (table) => {
 export const wsCreateTable = async () => {
     socketServer.emit("createTable");
 };
+
+export const wsDeteleTable = async (tableId) => {
+    socketServer.emit("deleteTable", { tableId });
+};

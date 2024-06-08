@@ -39,4 +39,12 @@ export const handleConnection = async (socket, io) => {
     socket.on("disconnect", () => {
         console.log(`Usuário desconectado`);
     });
+
+    socket.on("deleteTable", async (data) => {
+        console.log("data")
+        const { tableId } = data;
+        await deleteTable(tableId);
+        refreshTablesData();
+    });
+    
 };

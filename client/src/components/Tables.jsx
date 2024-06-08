@@ -1,7 +1,8 @@
 // src/components/Tables.js
 import { useEffect, useState } from "react";
 import { Card, Col, Row, Spin, Modal, List } from "antd";
-import { wsRefreshTablesData, wsRefreshTableOrders, wsCheckTableOrders } from "../socketEvents";
+import { wsRefreshTablesData, wsRefreshTableOrders, wsCheckTableOrders, wsDeteleTable } from "../socketEvents";
+import { CloseOutlined } from "@ant-design/icons"
 
 const { Meta } = Card;
 
@@ -42,6 +43,11 @@ const Tables = () => {
         setSelectedTable(null);
     };
 
+    const closeTableFunction = (tableId) => {
+        wsDeteleTable(tableId);
+    };
+    
+
     if (loading) {
         return <Spin />;
     }
@@ -58,7 +64,11 @@ const Tables = () => {
                             title={`Mesa ${table.tables_id}`}
                             bordered={false}
                             onClick={() => handleCardClick(table)}
-                            style={{ cursor: "pointer" }}
+                            style={{ cursor: 'pointer' }}
+                            extra={<CloseOutlined onClick={(e) => {
+                                e.stopPropagation(); 
+                                closeTableFunction(table.tables_id);
+                            }} />}
                         >
                             <Meta description={`Status: ${table.tables_available}`} />
                         </Card>
