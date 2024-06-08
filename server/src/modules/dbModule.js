@@ -4,7 +4,7 @@ export async function fetchTables() {
     const { data, error } = await supabase.from("tables").select();
 
     if (error) {
-        console.error("Error fetching tables:", error);
+        console.error(`ERRO AO CONSULTAR MESAS ${error}`);
         return;
     }
 
@@ -15,18 +15,12 @@ export async function fetchTableOrders(tableId) {
     const { data, error } = await supabase.from("order").select().eq("tables_id", tableId);
 
     if (error) {
-        console.log("Erro fetching orders: ", error);
+        console.log(`ERRO AO CONSULTAR PEDIDOS DA MESA ${error}`);
         return;
     }
 
     return data;
 }
-
-// const teste = {
-//     tableId: 2,
-// };
-
-// fetchTableOrders(teste);
 
 export async function updateTableStatus(receivedData) {
     // Data tem que ter: quantidade de pessoas e ID da mesa
@@ -36,7 +30,7 @@ export async function updateTableStatus(receivedData) {
         .eq("id", receivedData.tableId);
 
     if (error) {
-        console.error(error);
+        console.error(`ERRO AO ATUALIZAR MESA ${error}`);
         return;
     }
 }
@@ -49,7 +43,7 @@ export async function createOrder(receivedData) {
         .select();
 
     if (error) {
-        console.error(error);
+        console.error(`ERRO AO CRIAR PEDIDO ${error}`);
         return;
     }
 
@@ -65,15 +59,30 @@ export async function createOrder(receivedData) {
             .insert({ order_id: orderId, menu_id: menuId });
 
         if (error) {
-            console.error(error);
+            console.error(`ERRO AO ADICIONAR ITENS DO PEDIDO ${error}`);
             return;
         }
     }
 }
 
-// const exemple = {
-//     tableId: 2,
-//     menuId: 1,
-// };
+export async function createTable() {
+    const { error } = await supabase.from("tables").insert({});
 
-// createOrder(exemple);
+    if (error) {
+        console.error(`ERRO AO CRIAR MESA ${error}`);
+        return;
+    }
+}
+
+export async function deleteTable(receivedData) {
+    const { error } = await supabase.from("tables").delete().eq("tables_id", receivedData.tableId);
+
+    if (error) {
+        console.error(`ERRO AO DELETAR MESA ${error}`);
+        return;
+    }
+}
+
+// const teste = {
+//     tableId: 9,
+// };
