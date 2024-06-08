@@ -1,11 +1,7 @@
 // src/components/Tables.js
-import io from "socket.io-client";
 import { useEffect, useState } from "react";
 import { Card, Col, Row, Spin, Modal, List } from "antd";
-
-const socketServer = io("localhost:5001");
-// const socketServer = io("https://guloso-server-alpha-1-2.onrender.com");
-
+import { wsRefreshTablesData, wsRefreshTableOrders, wsCheckTableOrders } from "../socketEvents";
 
 const { Meta } = Card;
 
@@ -17,27 +13,25 @@ const Tables = () => {
     const [selectedTable, setSelectedTable] = useState(null);
 
     useEffect(() => {
-        const fetchTables = async () => {
-            socketServer.on("refreshTablesData", (data) => {
+        const fetchTables = () => {
+            wsRefreshTablesData((data) => {
                 setTables(data);
-
                 setLoading(false);
             });
         };
-
         fetchTables();
     });
 
-    const fetchOrders = async () => {
-        socketServer.on("refreshTableOrders", (data) => {
-            console.log(data);
+    const fetchOrders = () => {
+        wsRefreshTableOrders((data) => {
             setOrders(data);
+            console.log(data);
         });
-        setOpen(true);
     };
 
     const handleCardClick = (table) => {
-        socketServer.emit("checkTableOrders", table);
+        wsCheckTableOrders(table);
+        setOpen(true);
         fetchOrders();
         setSelectedTable();
     };
@@ -56,7 +50,10 @@ const Tables = () => {
         <>
             <Row gutter={[16, 16]}>
                 {tables.map((table) => (
-                    <Col key={table.tables_id} span={12}>
+                    <Col
+                        key={table.tables_id}
+                        span={12}
+                    >
                         <Card
                             title={`Mesa ${table.tables_id}`}
                             bordered={false}
@@ -69,7 +66,12 @@ const Tables = () => {
                 ))}
             </Row>
 
-            <Modal title={`Pedidos da Mesa`} open={open} onCancel={handleCancel} footer={null}>
+            <Modal
+                title={`Pedidos da Mesa`}
+                open={open}
+                onCancel={handleCancel}
+                footer={null}
+            >
                 <List
                     itemLayout="horizontal"
                     dataSource={orders}

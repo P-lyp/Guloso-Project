@@ -1,5 +1,4 @@
 {
-    "server": "https://guloso-server-alpha-1-2.onrender.com/",
-    "server-1": "https://guloso-server-alpha-1-2.onrender.com/",
-    "server-2" : "localhost:5001"
+    "online": "https://guloso-server-alpha-1-2.onrender.com/",
+    "local": "localhost:5001"
 }
