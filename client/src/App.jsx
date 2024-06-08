@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Layout, Menu, FloatButton } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import Tables from "./components/Tables";
+import { wsCreateTable } from "./socketEvents";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -65,7 +66,7 @@ const App = () => {
                             height: "60px",
                         }}
                         icon={<PlusCircleOutlined />}
-                        onClick={"kakakakakkakakakakak"}
+                        onClick={wsCreateTable}
                     />
                 </Content>
             </Layout>

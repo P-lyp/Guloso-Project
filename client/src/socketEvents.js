@@ -18,3 +18,7 @@ export const wsRefreshTableOrders = async (callback) => {
 export const wsCheckTableOrders = async (table) => {
     socketServer.emit("checkTableOrders", table);
 };
+
+export const wsCreateTable = async () => {
+    socketServer.emit("createTable");
+};
