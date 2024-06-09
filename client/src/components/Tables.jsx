@@ -8,6 +8,7 @@ import {
     wsDeteleTable,
 } from "../socketEvents";
 import { CloseOutlined } from "@ant-design/icons";
+import {cardHeaderStyle} from "../styles"
 
 const { Meta } = Card;
 
@@ -56,8 +57,6 @@ const Tables = () => {
         return <Spin />;
     }
 
-    const headerStyle = (table) => ({ header:{backgroundColor: table.tables_available ?  '#306B34' : '#BF0603', color: '#EFF1F3' }})
-
     return (
         <>
             <Row gutter={[16, 16]}>
@@ -74,7 +73,7 @@ const Tables = () => {
                             }
                             onClick={() => handleCardClick(table)}
                             style={{ height: "300px", CardHeader: { backgroundColor: '#your-color-here' } }}
-                            styles={headerStyle(table)}
+                            styles={cardHeaderStyle(table)}
                             hoverable={true}
                             extra={
                                 <CloseOutlined
