@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Layout, Menu, FloatButton } from "antd";
-import { PlusCircleOutlined } from "@ant-design/icons";
-import Tables from "./components/Tables";
-import { wsCreateTable } from "./socketEvents";
-import { layoutHeaderStyle, floatButtonStyle, layoutFooterStyle } from "./styles";
+import { Layout, Menu } from "antd";
+import { layoutHeaderStyle, layoutFooterStyle } from "./styles";
+import PageTables from './pages/PageTables'
+import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
+
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -17,61 +17,61 @@ const App = () => {
         setCollapsed(true);
     };
 
-    return (
-        <Layout style={{ minHeight: "100vh", backgroundColor: '#EFF1F3' }}>
-            <Header style={layoutHeaderStyle}>
-                Guloso Project
-            </Header>
-            <Layout style={{ minHeight: "calc(100vh - 64px)" }}>
-                {" "}
-                <Sider
-                    style={{ backgroundColor: '#202332' }}
-                    collapsed={collapsed}
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
+    const menuItensList = [
+        {
+            key: "1",
+            label: <Link to="/tables">Mesas</Link>,
+        },
+        {
+            key: "2",
+            label: <Link to="/orders">Pedidos</Link>
+        },
+        {
+            key: "3",
+            label: <Link to="/reports">Relatórios</Link>
+            ,
+        },
+    ]
 
-                >
-                    <Menu
+    return (
+        <Router>
+            <Layout style={{ minHeight: "100vh", backgroundColor: '#EFF1F3' }}>
+                <Header style={layoutHeaderStyle}>
+                    Guloso Project
+                </Header>
+                <Layout style={{ minHeight: "calc(100vh - 64px)" }}>
+                    {" "}
+                    <Sider
                         style={{ backgroundColor: '#202332' }}
-                        theme="dark"
-                        mode="inline"
-                        defaultSelectedKeys={["1"]}
-                        items={[
-                            {
-                                key: "1",
-                                label: "Mesas",
-                            },
-                            {
-                                key: "2",
-                                label: "Pedidos",
-                            },
-                            {
-                                key: "3",
-                                label: "Relatórios",
-                            },
-                        ]}
-                    />
-                </Sider>
-                <Content style={{ padding: "50px" }}>
-                    <div className="site-layout-content">
-                        <Tables /> {/* Passe o ID do restaurante desejado */}
-                    </div>
-                    <FloatButton
-                        type="primary"
-                        shape="circle"
-                        size="large"
-                        style={floatButtonStyle}
-                        icon={<PlusCircleOutlined />}
-                        onClick={wsCreateTable}
-                    />
-                </Content>
+                        collapsed={collapsed}
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
+
+                    >
+                        <Menu
+                            style={{ backgroundColor: '#202332' }}
+                            theme="dark"
+                            mode="inline"
+                            defaultSelectedKeys={["1"]}
+                            items={menuItensList}
+                        >
+                        </Menu>
+                    </Sider>
+                    <Content style={{ padding: "50px" }}>
+                        <Routes>
+                            <Route exact path="/tables" element={<PageTables />} />
+                            <Route exact path="/orders" element={<span>oii</span>}/>
+                            <Route exact path="/reports" element={<span>kkk</span>} />
+                        </Routes>
+                    </Content>
+                </Layout>
+                <Footer
+                    style={layoutFooterStyle}
+                >
+                    Restaurant Management ©2024
+                </Footer>
             </Layout>
-            <Footer
-                style={layoutFooterStyle}
-            >
-                Restaurant Management ©2024
-            </Footer>
-        </Layout>
+        </Router>
     );
 };
 
