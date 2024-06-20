@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import { Card, Col, Row, Spin, Modal, List } from "antd";
 import {
     wsRefreshTablesData,
-    wsRefreshTableOrders,
-    wsCheckTableOrders,
+    wsReceiveTableOrders,
+    wsSendTableIdForOrders,
     wsDeteleTable,
+    wsSendTableIdForTotalAmount,
+    wsReceiveTableTotalAmountValue,
 } from "../socketEvents";
 import { CloseOutlined } from "@ant-design/icons";
-import {cardHeaderStyle} from "../styles"
+import { cardHeaderStyle } from "../styles";
 
 const { Meta } = Card;
 
@@ -17,6 +19,7 @@ const Tables = () => {
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
     const [orders, setOrders] = useState([]);
+    const [totalOrdersValue, setTotalOrdersValue] = useState(0);
     const [selectedTable, setSelectedTable] = useState(null);
 
     useEffect(() => {
@@ -26,20 +29,32 @@ const Tables = () => {
                 setLoading(false);
             });
         };
+
         fetchTables();
     });
 
-    const fetchOrders = () => {
-        wsRefreshTableOrders((data) => {
+    const fetchAndSetTableOrders = (tableId) => {
+        wsSendTableIdForOrders(tableId);
+
+        wsReceiveTableOrders((data) => {
             setOrders(data);
             console.log(data);
         });
     };
 
+    const fetchAndSetTotalOrdersValue = (tableId) => {
+        wsSendTableIdForTotalAmount(tableId);
+
+        wsReceiveTableTotalAmountValue((data) => {
+            setTotalOrdersValue(data);
+        });
+    };
+
     const handleCardClick = (table) => {
-        wsCheckTableOrders(table);
         setOpen(true);
-        fetchOrders();
+        fetchAndSetTableOrders(table.tables_id);
+
+        fetchAndSetTotalOrdersValue(table.tables_id);
         setSelectedTable();
     };
 
@@ -67,12 +82,21 @@ const Tables = () => {
                     >
                         <Card
                             title={
-                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '24px' }}>{table.tables_id}</span>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <span style={{ fontSize: "24px" }}>{table.tables_id}</span>
                                 </div>
                             }
                             onClick={() => handleCardClick(table)}
-                            style={{ height: "300px", CardHeader: { backgroundColor: '#your-color-here' } }}
+                            style={{
+                                height: "300px",
+                                CardHeader: { backgroundColor: "#your-color-here" },
+                            }}
                             styles={cardHeaderStyle(table)}
                             hoverable={true}
                             extra={
@@ -84,7 +108,6 @@ const Tables = () => {
                                 />
                             }
                         >
-
                             <Meta description={`Status: ${table.tables_available}`} />
                         </Card>
                     </Col>
@@ -104,11 +127,13 @@ const Tables = () => {
                         <List.Item>
                             <List.Item.Meta
                                 title={`Pedido ${order.order_id}`}
-                                description={`Total: R$${order.order_totalamount} - Horário: ${order.order_time}`}
+                                description={`Valor: R$${order.order_totalamount} - Horário: ${order.order_time}`}
                             />
                         </List.Item>
                     )}
                 />
+
+                <p>Valor total dos pedidos: R${totalOrdersValue.total_orders_value}</p>
             </Modal>
         </>
     );

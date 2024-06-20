@@ -82,3 +82,13 @@ export async function deleteTable(tableId) {
         return;
     }
 }
+
+export async function sumTableOrders(tableId) {
+    const { data, error } = await supabase.rpc("sum_table_orders", { id_mesa: tableId });
+
+    if (error) {
+        console.error(`ERRO  ${error}`);
+    }
+
+    return data;
+}
