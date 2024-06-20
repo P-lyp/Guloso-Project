@@ -1,23 +1,34 @@
-import React from "react"
-import Tables from "../components/Tables"
-import { FloatButton } from "antd"
+import React from "react";
+import Tables from "../components/Tables";
+import { FloatButton } from "antd";
 import { floatButtonStyle } from "../styles";
-import { wsCreateTable } from "../socketEvents";
+
 import { PlusCircleOutlined } from "@ant-design/icons";
+import { WebSocketProvider, useWebSocket } from "../webSocketContext";
 
 const PageTables = () => {
     return (
         <div>
-            <Tables />
-            <FloatButton
-                type="primary"
-                shape="circle"
-                size="large"
-                style={floatButtonStyle}
-                icon={<PlusCircleOutlined />}
-                onClick={wsCreateTable}
-            />
+            <WebSocketProvider>
+                <Tables />
+                <FloatButtonWrapper />
+            </WebSocketProvider>
         </div>
+    );
+};
+
+const FloatButtonWrapper = () => {
+    const { wsCreateTable } = useWebSocket();
+
+    return (
+        <FloatButton
+            type="primary"
+            shape="circle"
+            size="large"
+            style={floatButtonStyle}
+            icon={<PlusCircleOutlined />}
+            onClick={wsCreateTable}
+        />
     );
 };
 

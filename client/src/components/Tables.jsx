@@ -1,14 +1,7 @@
 // src/components/Tables.js
 import { useEffect, useState } from "react";
 import { Card, Col, Row, Spin, Modal, List } from "antd";
-import {
-    wsRefreshTablesData,
-    wsReceiveTableOrders,
-    wsSendTableIdForOrders,
-    wsDeteleTable,
-    wsSendTableIdForTotalAmount,
-    wsReceiveTableTotalAmountValue,
-} from "../socketEvents";
+import { useWebSocket } from "../webSocketContext";
 import { CloseOutlined } from "@ant-design/icons";
 import { cardHeaderStyle } from "../styles";
 
@@ -22,6 +15,15 @@ const Tables = () => {
     const [totalOrdersValue, setTotalOrdersValue] = useState(0);
     const [selectedTable, setSelectedTable] = useState(null);
 
+    const {
+        wsRefreshTablesData,
+        wsSendTableIdForOrders,
+        wsReceiveTableOrders,
+        wsSendTableIdForTotalAmount,
+        wsReceiveTableTotalAmountValue,
+        wsDeleteTable,
+    } = useWebSocket();
+
     useEffect(() => {
         const fetchTables = () => {
             wsRefreshTablesData((data) => {
@@ -31,14 +33,13 @@ const Tables = () => {
         };
 
         fetchTables();
-    });
+    }, [wsRefreshTablesData]);
 
     const fetchAndSetTableOrders = (tableId) => {
         wsSendTableIdForOrders(tableId);
 
         wsReceiveTableOrders((data) => {
             setOrders(data);
-            console.log(data);
         });
     };
 
@@ -65,7 +66,7 @@ const Tables = () => {
     };
 
     const closeTableFunction = (tableId) => {
-        wsDeteleTable(tableId);
+        wsDeleteTable(tableId);
     };
 
     if (loading) {
