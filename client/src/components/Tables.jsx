@@ -1,6 +1,6 @@
 // src/components/Tables.js
 import { useEffect, useState } from "react";
-import { Card, Col, Row, Spin, Modal, List } from "antd";
+import { Card, Col, Row, Spin, Modal, List, Skeleton } from "antd";
 import { useWebSocket } from "../webSocketContext";
 import { CloseOutlined } from "@ant-design/icons";
 import { cardHeaderStyle } from "../styles";
@@ -62,6 +62,7 @@ const Tables = () => {
     const handleCancel = () => {
         setOpen(false);
         setOrders([]);
+        setTotalOrdersValue(0);
         setSelectedTable(null);
     };
 
@@ -69,50 +70,62 @@ const Tables = () => {
         wsDeleteTable(tableId);
     };
 
-    if (loading) {
-        return <Spin />;
-    }
-
     return (
         <>
             <Row gutter={[16, 16]}>
-                {tables.map((table) => (
-                    <Col
-                        key={table.tables_id}
-                        span={6}
-                    >
-                        <Card
-                            title={
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    <span style={{ fontSize: "24px" }}>{table.tables_id}</span>
-                                </div>
-                            }
-                            onClick={() => handleCardClick(table)}
-                            style={{
-                                height: "300px",
-                                CardHeader: { backgroundColor: "#your-color-here" },
-                            }}
-                            styles={cardHeaderStyle(table)}
-                            hoverable={true}
-                            extra={
-                                <CloseOutlined
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        closeTableFunction(table.tables_id);
-                                    }}
-                                />
-                            }
-                        >
-                            <Meta description={`Status: ${table.tables_available}`} />
-                        </Card>
-                    </Col>
-                ))}
+                {loading
+                    ? Array.from({ length: 4 }).map((_, index) => (
+                          <Col
+                              key={index}
+                              span={6}
+                          >
+                              <Skeleton
+                                  active
+                                  title
+                              >
+                                  <Card loading />
+                              </Skeleton>
+                          </Col>
+                      ))
+                    : tables.map((table) => (
+                          <Col
+                              key={table.tables_id}
+                              span={6}
+                          >
+                              <Card
+                                  title={
+                                      <div
+                                          style={{
+                                              display: "flex",
+                                              justifyContent: "center",
+                                              alignItems: "center",
+                                          }}
+                                      >
+                                          <span style={{ fontSize: "24px" }}>
+                                              {table.tables_id}
+                                          </span>
+                                      </div>
+                                  }
+                                  onClick={() => handleCardClick(table)}
+                                  style={{
+                                      height: "300px",
+                                      CardHeader: { backgroundColor: "#your-color-here" },
+                                  }}
+                                  styles={cardHeaderStyle(table)}
+                                  hoverable={true}
+                                  extra={
+                                      <CloseOutlined
+                                          onClick={(e) => {
+                                              e.stopPropagation();
+                                              closeTableFunction(table.tables_id);
+                                          }}
+                                      />
+                                  }
+                              >
+                                  <Meta description={`Status: ${table.tables_available}`} />
+                              </Card>
+                          </Col>
+                      ))}
             </Row>
 
             <Modal

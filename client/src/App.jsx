@@ -18,7 +18,7 @@ const App = () => {
     const menuItensList = [
         {
             key: "1",
-            label: <Link to="/tables">Mesas</Link>,
+            label: <Link to="/">Mesas</Link>,
         },
         {
             key: "2",
@@ -54,7 +54,7 @@ const App = () => {
                         <Routes>
                             <Route
                                 exact
-                                path="/tables"
+                                path="/"
                                 element={<PageTables />}
                             />
                             <Route
