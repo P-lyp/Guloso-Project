@@ -17,6 +17,7 @@ const PageTables = () => {
     );
 };
 
+// FUNÇÃO NECESSÁRIA PARA PODER UTILIZAR O WS
 const FloatButtonWrapper = () => {
     const { wsCreateTable } = useWebSocket();
 

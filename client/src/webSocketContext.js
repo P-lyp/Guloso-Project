@@ -11,13 +11,13 @@ export const WebSocketProvider = ({ children }) => {
     useEffect(() => {
         const socketServer = io(server["online"]);
 
-        socketServer.on("connect", () => {
-            console.log("WebSocket connected");
-        });
+        // socketServer.on("connect", () => {
+        //     console.log("WebSocket connected");
+        // });
 
-        socketServer.on("disconnect", () => {
-            console.log("WebSocket disconnected");
-        });
+        // socketServer.on("disconnect", () => {
+        //     console.log("WebSocket disconnected");
+        // });
 
         setSocket(socketServer);
 
@@ -25,6 +25,8 @@ export const WebSocketProvider = ({ children }) => {
             socketServer.close();
         };
     }, []);
+
+    //FUNÇÕES DO WS DO CLIENT DECLARADAS ABAIXO
 
     //Recebe os dados das mesas
     const wsRefreshTablesData = (callback) => {

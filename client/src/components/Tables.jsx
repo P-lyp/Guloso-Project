@@ -1,6 +1,6 @@
 // src/components/Tables.js
 import { useEffect, useState } from "react";
-import { Card, Col, Row, Spin, Modal, List, Skeleton } from "antd";
+import { Card, Col, Row, Modal, List, Skeleton } from "antd";
 import { useWebSocket } from "../webSocketContext";
 import { CloseOutlined } from "@ant-design/icons";
 import { cardHeaderStyle } from "../styles";
@@ -10,11 +10,12 @@ const { Meta } = Card;
 const Tables = () => {
     const [tables, setTables] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [open, setOpen] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
     const [orders, setOrders] = useState([]);
     const [totalOrdersValue, setTotalOrdersValue] = useState(0);
     const [selectedTable, setSelectedTable] = useState(null);
 
+    // Importa as funções de ws
     const {
         wsRefreshTablesData,
         wsSendTableIdForOrders,
@@ -25,9 +26,11 @@ const Tables = () => {
     } = useWebSocket();
 
     useEffect(() => {
+        // Consulta as mesas
         const fetchTables = () => {
             wsRefreshTablesData((data) => {
                 setTables(data);
+                // Seta o loading como false para parar o loading
                 setLoading(false);
             });
         };
@@ -35,44 +38,60 @@ const Tables = () => {
         fetchTables();
     }, [wsRefreshTablesData]);
 
+    // Consultar pedidos de uma mesa
     const fetchAndSetTableOrders = (tableId) => {
+        // Envia o ID da mesa pro backend poder filtrar
         wsSendTableIdForOrders(tableId);
 
+        // Recebe o resultado do backend e define o estado
         wsReceiveTableOrders((data) => {
             setOrders(data);
         });
     };
 
+    // Consulta valor total dos pedidos de uma mesa
     const fetchAndSetTotalOrdersValue = (tableId) => {
+        // Envia o ID da mesa pro backend poder filtrar
         wsSendTableIdForTotalAmount(tableId);
 
+        // Recebe o resultado do backend e define o estado
         wsReceiveTableTotalAmountValue((data) => {
             setTotalOrdersValue(data);
         });
     };
 
+    // Lida com as ações quando clicar em um card (mesa)
     const handleCardClick = (table) => {
-        setOpen(true);
+        // seta o estado do modal para true, exibindo-o
+        setModalOpen(true);
+        //Envia o ID da mesa clicada e recebe os pedidos
         fetchAndSetTableOrders(table.tables_id);
-
+        //Envia o ID da mesa clicada e recebe o total dos pedidos
         fetchAndSetTotalOrdersValue(table.tables_id);
         setSelectedTable();
     };
 
+    // Lida com as ações quando clicar para fechar o modal
     const handleCancel = () => {
-        setOpen(false);
+        // seta o estado do modal para true, fechando-o
+        setModalOpen(false);
+        // limpa o state dos pedidos
         setOrders([]);
+        // limpa o state do valor total dos pedidos
         setTotalOrdersValue(0);
         setSelectedTable(null);
     };
 
+    // Ação quando clicar no botão X dos cards
     const closeTableFunction = (tableId) => {
+        // Envia o id da mesa do card clicado pro backend solicitando a remoção da mesa
         wsDeleteTable(tableId);
     };
 
     return (
         <>
             <Row gutter={[16, 16]}>
+                {/* SE LOADING FOR TRUE, CARREGA OS COMPONENTES DO SKELETON */}
                 {loading
                     ? Array.from({ length: 4 }).map((_, index) => (
                           <Col
@@ -87,7 +106,8 @@ const Tables = () => {
                               </Skeleton>
                           </Col>
                       ))
-                    : tables.map((table) => (
+                    : //   QUANDO FINALIZAR O LOADING, RENDERIZA NORMALMENTE
+                      tables.map((table) => (
                           <Col
                               key={table.tables_id}
                               span={6}
@@ -130,7 +150,7 @@ const Tables = () => {
 
             <Modal
                 title={`Pedidos da Mesa`}
-                open={open}
+                open={modalOpen}
                 onCancel={handleCancel}
                 footer={null}
             >
