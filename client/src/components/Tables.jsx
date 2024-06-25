@@ -1,9 +1,9 @@
 // src/components/Tables.js
 import { useEffect, useState } from "react";
-import { Card, Col, Row, Modal, List, Skeleton } from "antd";
+import { Card, Col, Row, Modal, List, Skeleton, Button, Flex } from "antd";
 import { useWebSocket } from "../webSocketContext";
-import { CloseOutlined } from "@ant-design/icons";
-import { cardHeaderStyle } from "../styles";
+import { CloseOutlined, EllipsisOutlined } from "@ant-design/icons";
+import { cardStyles } from "../styles";
 
 const { Meta } = Card;
 
@@ -13,6 +13,9 @@ const Tables = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [orders, setOrders] = useState([]);
     const [totalOrdersValue, setTotalOrdersValue] = useState(0);
+
+    // IN PROGESS
+    const [tableAvailable, setTableAvailable] = useState(true);
     const [selectedTable, setSelectedTable] = useState(null);
 
     // Importa as funções de ws
@@ -128,11 +131,14 @@ const Tables = () => {
                                   }
                                   onClick={() => handleCardClick(table)}
                                   style={{
-                                      height: "300px",
-                                      CardHeader: { backgroundColor: "#your-color-here" },
+                                      height: "48vh",
+                                      backgroundColor: "#fff",
+                                      //   borderColor: "#575757",
+                                      //   borderWidth: "0.2px",
                                   }}
-                                  styles={cardHeaderStyle(table)}
+                                  styles={cardStyles(table)}
                                   hoverable={true}
+                                  bordered={false}
                                   extra={
                                       <CloseOutlined
                                           onClick={(e) => {
@@ -142,7 +148,34 @@ const Tables = () => {
                                       />
                                   }
                               >
-                                  <Meta description={`Status: ${table.tables_available}`} />
+                                  <div
+                                      style={{
+                                          display: "flex",
+                                          height: "100%",
+
+                                          flexDirection: "column",
+                                          justifyContent: "space-between",
+                                      }}
+                                  >
+                                      <Meta
+                                          style={{ display: "flex" }}
+                                          title={table.tables_available ? "Disponível" : "Ocupada"}
+                                      />
+                                      <div
+                                          style={{
+                                              display: "flex",
+                                              flexDirection: "row",
+                                              alignItems: "center",
+                                              justifyContent: "space-between",
+                                              width: "100%",
+                                          }}
+                                      >
+                                          <Button
+                                              shape="circle"
+                                              icon={<EllipsisOutlined />}
+                                          />
+                                      </div>
+                                  </div>
                               </Card>
                           </Col>
                       ))}
