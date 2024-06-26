@@ -3,6 +3,10 @@ import { Layout, Menu } from "antd";
 import { layoutHeaderStyle, layoutFooterStyle } from "./styles";
 import PageTables from "./pages/PageTables";
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
+import { MdTableRestaurant } from "react-icons/md";
+import { IoRestaurant } from "react-icons/io5";
+import { TbReportAnalytics } from "react-icons/tb";
+import { BiFoodMenu } from "react-icons/bi";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -19,14 +23,22 @@ const App = () => {
         {
             key: "1",
             label: <Link to="/">Mesas</Link>,
+            icon: <MdTableRestaurant />
         },
         {
             key: "2",
             label: <Link to="/orders">Pedidos</Link>,
+            icon: <IoRestaurant />
         },
         {
             key: "3",
             label: <Link to="/reports">Relatórios</Link>,
+            icon: <TbReportAnalytics />
+        },
+        {
+            key: "4",
+            label: <Link to="/menu">Cardápio</Link>,
+            icon: <BiFoodMenu />
         },
     ];
 
@@ -66,6 +78,11 @@ const App = () => {
                                 exact
                                 path="/reports"
                                 element={<span>kkk</span>}
+                            />
+                            <Route
+                                exact
+                                path="/menu"
+                                element={<span>oiiii</span>}
                             />
                         </Routes>
                     </Content>
