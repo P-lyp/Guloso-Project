@@ -1,6 +1,6 @@
 // src/components/Tables.js
 import { useEffect, useState } from "react";
-import { Card, Col, Row, Modal, List, Skeleton, Button, Flex } from "antd";
+import { Card, Col, Row, Modal, List, Skeleton, Button } from "antd";
 import { useWebSocket } from "../webSocketContext";
 import { CloseOutlined, EllipsisOutlined } from "@ant-design/icons";
 import { cardStyles } from "../styles";
@@ -8,14 +8,11 @@ import { cardStyles } from "../styles";
 const { Meta } = Card;
 
 const Tables = () => {
-    const [tables, setTables] = useState([]);
+    const [tables, setTables] = useState(null);
     const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
-    const [orders, setOrders] = useState([]);
+    const [orders, setOrders] = useState(null);
     const [totalOrdersValue, setTotalOrdersValue] = useState(0);
-
-    // IN PROGESS
-    const [tableAvailable, setTableAvailable] = useState(true);
     const [selectedTable, setSelectedTable] = useState(null);
 
     // Importa as funções de ws
@@ -26,53 +23,60 @@ const Tables = () => {
         wsSendTableIdForTotalAmount,
         wsReceiveTableTotalAmountValue,
         wsDeleteTable,
+        wsChangeTableStatus,
     } = useWebSocket();
 
-    useEffect(() => {
-        // Consulta as mesas
-        const fetchTables = () => {
-            wsRefreshTablesData((data) => {
-                setTables(data);
-                // Seta o loading como false para parar o loading
-                setLoading(false);
-            });
-        };
-
-        fetchTables();
-    }, [wsRefreshTablesData]);
-
-    // Consultar pedidos de uma mesa
-    const fetchAndSetTableOrders = (tableId) => {
-        // Envia o ID da mesa pro backend poder filtrar
-        wsSendTableIdForOrders(tableId);
-
-        // Recebe o resultado do backend e define o estado
-        wsReceiveTableOrders((data) => {
-            setOrders(data);
+    const fetchTables = () => {
+        wsRefreshTablesData((data) => {
+            setTables(data);
+            // Seta o loading como false para parar o loading
+            setLoading(false);
         });
     };
 
-    // Consulta valor total dos pedidos de uma mesa
-    const fetchAndSetTotalOrdersValue = (tableId) => {
-        // Envia o ID da mesa pro backend poder filtrar
-        wsSendTableIdForTotalAmount(tableId);
-
-        // Recebe o resultado do backend e define o estado
-        wsReceiveTableTotalAmountValue((data) => {
-            setTotalOrdersValue(data);
-        });
-    };
+    // useEffect(() => {
+    //     // Consulta as mesas
+    //     fetchTables();
+    // });
 
     // Lida com as ações quando clicar em um card (mesa)
     const handleCardClick = (table) => {
+        setSelectedTable({ id: table.tables_id, available: table.tables_available });
         // seta o estado do modal para true, exibindo-o
         setModalOpen(true);
-        //Envia o ID da mesa clicada e recebe os pedidos
-        fetchAndSetTableOrders(table.tables_id);
-        //Envia o ID da mesa clicada e recebe o total dos pedidos
-        fetchAndSetTotalOrdersValue(table.tables_id);
-        setSelectedTable();
     };
+
+    useEffect(() => {
+        fetchTables();
+
+        if (selectedTable) {
+            // Consultar pedidos de uma mesa
+            const requestTableOrders = (tableId) => {
+                // Envia o ID da mesa pro backend poder filtrar
+                wsSendTableIdForOrders(tableId);
+
+                // Recebe o resultado do backend e define o estado
+                wsReceiveTableOrders((data) => {
+                    setOrders(data);
+                });
+            };
+
+            // Consulta valor total dos pedidos de uma mesa
+            const requestTotalOrdersValue = (tableId) => {
+                // Envia o ID da mesa pro backend poder filtrar
+                wsSendTableIdForTotalAmount(tableId);
+
+                // Recebe o resultado do backend e define o estado
+                wsReceiveTableTotalAmountValue((data) => {
+                    setTotalOrdersValue(data);
+                });
+            };
+            //Envia o ID da mesa clicada e recebe os pedidos
+            requestTableOrders(selectedTable.id);
+            //Envia o ID da mesa clicada e recebe o total dos pedidos
+            requestTotalOrdersValue(selectedTable.id);
+        }
+    });
 
     // Lida com as ações quando clicar para fechar o modal
     const handleCancel = () => {
@@ -89,6 +93,21 @@ const Tables = () => {
     const closeTableFunction = (tableId) => {
         // Envia o id da mesa do card clicado pro backend solicitando a remoção da mesa
         wsDeleteTable(tableId);
+    };
+
+    const changeTableStatus = () => {
+        const newTableStatus = !selectedTable.available;
+        wsChangeTableStatus(selectedTable.id, newTableStatus);
+        setSelectedTable({ ...selectedTable, available: newTableStatus });
+
+        // Atualiza o estado de tables para refletir a mudança
+        const updatedTables = tables.map((table) => {
+            if (table.tables_id === selectedTable.id) {
+                return { ...table, tables_available: newTableStatus };
+            }
+            return table;
+        });
+        setTables(updatedTables);
     };
 
     return (
@@ -182,25 +201,40 @@ const Tables = () => {
             </Row>
 
             <Modal
-                title={`Pedidos da Mesa`}
+                title={`Dados da Mesa`}
                 open={modalOpen}
                 onCancel={handleCancel}
                 footer={null}
             >
-                <List
-                    itemLayout="horizontal"
-                    dataSource={orders}
-                    renderItem={(order) => (
-                        <List.Item>
-                            <List.Item.Meta
-                                title={`Pedido ${order.order_id}`}
-                                description={`Valor: R$${order.order_totalamount} - Horário: ${order.order_time}`}
-                            />
-                        </List.Item>
-                    )}
-                />
+                {selectedTable && selectedTable.available ? (
+                    <>
+                        <p>Mesa disponível</p>
+                        <Button onClick={() => changeTableStatus()}>Ocupar</Button>
+                    </>
+                ) : orders && orders.length > 0 ? (
+                    <>
+                        <List
+                            itemLayout="horizontal"
+                            dataSource={orders}
+                            renderItem={(order) => (
+                                <List.Item>
+                                    <List.Item.Meta
+                                        title={`Pedido ${order.order_id}`}
+                                        description={`Valor: R$${order.order_totalamount} - Horário: ${order.order_time}`}
+                                    />
+                                </List.Item>
+                            )}
+                        />
 
-                <p>Valor total dos pedidos: R${totalOrdersValue.total_orders_value}</p>
+                        <p>Valor total dos pedidos: R${totalOrdersValue.total_orders_value}</p>
+                        <Button onClick={() => changeTableStatus()}>Desocupar</Button>
+                    </>
+                ) : (
+                    <>
+                        <p>Sem pedidos</p>
+                        <Button onClick={() => changeTableStatus()}>Desocupar</Button>
+                    </>
+                )}
             </Modal>
         </>
     );

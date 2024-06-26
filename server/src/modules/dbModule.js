@@ -1,7 +1,7 @@
 import { supabase } from "./supabaseModule.js";
 
 export async function selectTables() {
-    const { data, error } = await supabase.from("tables").select();
+    const { data, error } = await supabase.from("tables").select("*").order("tables_available");
 
     if (error) {
         console.error(`ERRO AO CONSULTAR MESAS ${error}`);
@@ -22,12 +22,11 @@ export async function selectTableOrders(tableId) {
     return data;
 }
 
-export async function updateTableStatus(receivedData) {
-    // Data tem que ter: quantidade de pessoas e ID da mesa
+export async function updateTableStatus(tableId, newAvailableStatus) {
     const { error } = await supabase
         .from("tables")
-        .update({ tables_available: false, tables_diners: data.dinersQnt })
-        .eq("id", receivedData.tableId);
+        .update({ tables_available: newAvailableStatus })
+        .eq("tables_id", tableId);
 
     if (error) {
         console.error(`ERRO AO ATUALIZAR MESA ${error}`);

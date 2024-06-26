@@ -44,9 +44,8 @@ export const handleConnection = async (socket, io) => {
 
     // TO DO: ADICIONAR FUNÇAO NO FRONT
     // Define o status da mesa para available: false
-    socket.on("updateTableStatus", async (data) => {
-        await updateTableStatus(data);
-        RefreshTablesData();
+    socket.on("changeTableStatus", async (tableId, newAvailableStatus) => {
+        await updateTableStatus(tableId, newAvailableStatus);
     });
 
     // TO DO: ADICIONAR FUNÇAO NO FRONT

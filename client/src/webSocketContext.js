@@ -9,7 +9,7 @@ export const WebSocketProvider = ({ children }) => {
     const [socket, setSocket] = useState(null);
 
     useEffect(() => {
-        const socketServer = io(server["online"]);
+        const socketServer = io(server["local"]);
 
         // socketServer.on("connect", () => {
         //     console.log("WebSocket connected");
@@ -63,6 +63,10 @@ export const WebSocketProvider = ({ children }) => {
         socket?.emit("deleteTable", { tableId });
     };
 
+    const wsChangeTableStatus = (tableId, newAvailableStatus) => {
+        socket?.emit("changeTableStatus", tableId, newAvailableStatus);
+    };
+
     return (
         <webSocketContext.Provider
             value={{
@@ -73,6 +77,7 @@ export const WebSocketProvider = ({ children }) => {
                 wsReceiveTableTotalAmountValue,
                 wsCreateTable,
                 wsDeleteTable,
+                wsChangeTableStatus,
             }}
         >
             {children}
