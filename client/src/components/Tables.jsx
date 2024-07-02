@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Card, Col, Row, Modal, List, Skeleton, Button } from "antd";
 import { useWebSocket } from "../webSocketContext";
-import { CloseOutlined, EllipsisOutlined } from "@ant-design/icons";
+import { CloseOutlined, EllipsisOutlined, PlusOutlined } from "@ant-design/icons";
 import { cardStyles } from "../styles";
 
 const { Meta } = Card;
@@ -33,11 +33,6 @@ const Tables = () => {
             setLoading(false);
         });
     };
-
-    // useEffect(() => {
-    //     // Consulta as mesas
-    //     fetchTables();
-    // });
 
     // Lida com as ações quando clicar em um card (mesa)
     const handleCardClick = (table) => {
@@ -150,7 +145,7 @@ const Tables = () => {
                                   }
                                   onClick={() => handleCardClick(table)}
                                   style={{
-                                      height: "48vh",
+                                      height: "44vh",
                                       backgroundColor: "#fff",
                                       border: "none",
                                       //   borderColor: "#575757",
@@ -192,7 +187,14 @@ const Tables = () => {
                                       >
                                           <Button
                                               shape="circle"
+                                              onClick={(e) => e.stopPropagation()}
                                               icon={<EllipsisOutlined />}
+                                          />
+                                          <Button
+                                              shape="circle"
+                                              size="large"
+                                              onClick={(e) => e.stopPropagation()}
+                                              icon={<PlusOutlined />}
                                           />
                                       </div>
                                   </div>

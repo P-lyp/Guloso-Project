@@ -11,12 +11,13 @@ export const cardStyles = (table) => ({
         backgroundColor: table.tables_available ? "#347B39" : "#BF0603",
         color: "#EFF1F3",
         border: "none",
+        height: "6vh",
         // border: "transparent",
         // borderWidth: "0 0.1px 0 0.1px",
     },
 
     body: {
-        height: "82%",
+        height: "38vh",
         padding: "5% 8%",
         backgroundColor: "#fafafa",
         border: "none",
