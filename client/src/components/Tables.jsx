@@ -152,8 +152,9 @@ const Tables = () => {
                                   style={{
                                       height: "48vh",
                                       backgroundColor: "#fff",
+                                      border: "none",
                                       //   borderColor: "#575757",
-                                      //   borderWidth: "0.2px",
+                                      //   borderWidth: "0.4px",
                                   }}
                                   styles={cardStyles(table)}
                                   hoverable={true}

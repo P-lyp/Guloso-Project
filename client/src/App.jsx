@@ -7,6 +7,9 @@ import { MdTableRestaurant } from "react-icons/md";
 import { IoRestaurant } from "react-icons/io5";
 import { TbReportAnalytics } from "react-icons/tb";
 import { BiFoodMenu } from "react-icons/bi";
+import "./App.css";
+
+import { contentStyles } from "./styles";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -19,26 +22,32 @@ const App = () => {
         setCollapsed(true);
     };
 
+    const iconStyle = {
+        // borderRadius: "50%",
+        color: "#202332",
+        // fontSize: "30px",
+    };
+
     const menuItensList = [
         {
             key: "1",
             label: <Link to="/">Mesas</Link>,
-            icon: <MdTableRestaurant />
+            icon: <MdTableRestaurant style={iconStyle} />,
         },
         {
             key: "2",
             label: <Link to="/orders">Pedidos</Link>,
-            icon: <IoRestaurant />
+            icon: <IoRestaurant style={iconStyle} />,
         },
         {
             key: "3",
             label: <Link to="/reports">Relatórios</Link>,
-            icon: <TbReportAnalytics />
+            icon: <TbReportAnalytics style={iconStyle} />,
         },
         {
             key: "4",
             label: <Link to="/menu">Cardápio</Link>,
-            icon: <BiFoodMenu />
+            icon: <BiFoodMenu style={iconStyle} />,
         },
     ];
 
@@ -47,22 +56,36 @@ const App = () => {
             <Layout style={{ minHeight: "100vh", backgroundColor: "#EFF1F3" }}>
                 <Header style={layoutHeaderStyle}>Guloso Project</Header>
                 <Layout style={{ minHeight: "calc(100vh - 64px)" }}>
-                    {" "}
                     <Sider
-                        style={{ backgroundColor: "#202332" }}
+                        className="sider"
+                        style={{}}
+                        theme="light"
                         collapsed={collapsed}
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
                     >
                         <Menu
-                            style={{ backgroundColor: "#202332" }}
-                            theme="dark"
+                            className="menu"
                             mode="inline"
+                            theme="light"
                             defaultSelectedKeys={["1"]}
-                            items={menuItensList}
-                        ></Menu>
+                        >
+                            {menuItensList.map((item) => (
+                                <Menu.Item
+                                    key={item.key}
+                                    icon={item.icon}
+                                    style={{
+                                        height: "100%",
+
+                                        color: "black",
+                                    }}
+                                >
+                                    <Link to={item.link}>{item.label}</Link>
+                                </Menu.Item>
+                            ))}
+                        </Menu>
                     </Sider>
-                    <Content style={{ padding: "50px" }}>
+                    <Content style={contentStyles}>
                         <Routes>
                             <Route
                                 exact
