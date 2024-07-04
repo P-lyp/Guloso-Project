@@ -8,7 +8,7 @@ import { cardStyles } from "../styles";
 const { Meta } = Card;
 
 const Tables = () => {
-    const [tables, setTables] = useState(null);
+    const [tables, setTables] = useState([]);
     const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
     const [orders, setOrders] = useState(null);
@@ -36,7 +36,7 @@ const Tables = () => {
 
     // Lida com as ações quando clicar em um card (mesa)
     const handleCardClick = (table) => {
-        setSelectedTable({ id: table.tables_id, available: table.tables_available });
+        setSelectedTable({ id: table.tables_id, statusCode: table.tablestatus_code });
         // seta o estado do modal para true, exibindo-o
         setModalOpen(true);
     };
@@ -90,24 +90,27 @@ const Tables = () => {
         wsDeleteTable(tableId);
     };
 
-    const changeTableStatus = () => {
-        const newTableStatus = !selectedTable.available;
-        wsChangeTableStatus(selectedTable.id, newTableStatus);
-        setSelectedTable({ ...selectedTable, available: newTableStatus });
+    // Função para alterar o status da mesa
+    const changeTableStatus = (newTableStatus) => {
+        const tableId = selectedTable.id;
+        // Envia o ID da mesa e o novo status para o backend
+        wsChangeTableStatus(tableId, newTableStatus);
 
         // Atualiza o estado de tables para refletir a mudança
         const updatedTables = tables.map((table) => {
-            if (table.tables_id === selectedTable.id) {
-                return { ...table, tables_available: newTableStatus };
+            if (table.tables_id === tableId) {
+                return { ...table, tablestatus_code: newTableStatus };
             }
             return table;
         });
         setTables(updatedTables);
+
+        setSelectedTable({ ...selectedTable, statusCode: newTableStatus });
     };
 
     return (
         <>
-            <Row gutter={[16, 16]}>
+            <Row gutter={[22, 40]}>
                 {/* SE LOADING FOR TRUE, CARREGA OS COMPONENTES DO SKELETON */}
                 {loading
                     ? Array.from({ length: 4 }).map((_, index) => (
@@ -145,7 +148,7 @@ const Tables = () => {
                                   }
                                   onClick={() => handleCardClick(table)}
                                   style={{
-                                      height: "44vh",
+                                      height: "46vh",
                                       backgroundColor: "#fff",
                                       border: "none",
                                       //   borderColor: "#575757",
@@ -174,7 +177,11 @@ const Tables = () => {
                                   >
                                       <Meta
                                           style={{ display: "flex" }}
-                                          title={table.tables_available ? "Disponível" : "Ocupada"}
+                                          title={
+                                              table.tablestatus_code === "A"
+                                                  ? "Disponível"
+                                                  : "Ocupada"
+                                          }
                                       />
                                       <div
                                           style={{
@@ -209,10 +216,10 @@ const Tables = () => {
                 onCancel={handleCancel}
                 footer={null}
             >
-                {selectedTable && selectedTable.available ? (
+                {selectedTable && selectedTable.statusCode === "A" ? (
                     <>
                         <p>Mesa disponível</p>
-                        <Button onClick={() => changeTableStatus()}>Ocupar</Button>
+                        <Button onClick={() => changeTableStatus("T")}>Ocupar</Button>
                     </>
                 ) : orders && orders.length > 0 ? (
                     <>
@@ -230,12 +237,12 @@ const Tables = () => {
                         />
 
                         <p>Valor total dos pedidos: R${totalOrdersValue.total_orders_value}</p>
-                        <Button onClick={() => changeTableStatus()}>Desocupar</Button>
+                        <Button onClick={() => changeTableStatus("A")}>Desocupar</Button>
                     </>
                 ) : (
                     <>
                         <p>Sem pedidos</p>
-                        <Button onClick={() => changeTableStatus()}>Desocupar</Button>
+                        <Button onClick={() => changeTableStatus("A")}>Desocupar</Button>
                     </>
                 )}
             </Modal>

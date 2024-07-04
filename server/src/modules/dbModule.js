@@ -1,7 +1,10 @@
 import { supabase } from "./supabaseModule.js";
 
 export async function selectTables() {
-    const { data, error } = await supabase.from("tables").select("*").order("tables_available");
+    const { data, error } = await supabase
+        .from("tables")
+        .select("*")
+        .order("tablestatus_code", { ascending: false });
 
     if (error) {
         console.error(`ERRO AO CONSULTAR MESAS ${error}`);
@@ -22,10 +25,10 @@ export async function selectTableOrders(tableId) {
     return data;
 }
 
-export async function updateTableStatus(tableId, newAvailableStatus) {
+export async function updateTableStatus(tableId, newTableStatus) {
     const { error } = await supabase
         .from("tables")
-        .update({ tables_available: newAvailableStatus })
+        .update({ tablestatus_code: newTableStatus })
         .eq("tables_id", tableId);
 
     if (error) {

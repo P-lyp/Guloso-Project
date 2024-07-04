@@ -63,8 +63,8 @@ export const WebSocketProvider = ({ children }) => {
         socket?.emit("deleteTable", { tableId });
     };
 
-    const wsChangeTableStatus = (tableId, newAvailableStatus) => {
-        socket?.emit("changeTableStatus", tableId, newAvailableStatus);
+    const wsChangeTableStatus = (tableId, newTableStatus) => {
+        socket?.emit("changeTableStatus", tableId, newTableStatus);
     };
 
     return (
