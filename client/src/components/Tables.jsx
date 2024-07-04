@@ -85,9 +85,17 @@ const Tables = () => {
     };
 
     // Ação quando clicar no botão X dos cards
-    const closeTableFunction = (tableId) => {
+    const closeTableFunction = (table) => {
+        // Verifica se a mesa está disponível. Se sim pode deletar, se não.. não....
+        if (table.tables_available === false) {
+            console.log(
+                "opaaa kkk calma la paizao implementa um outro status ai de Pago ou Fechado rsrsrs"
+            );
+        }
         // Envia o id da mesa do card clicado pro backend solicitando a remoção da mesa
-        wsDeleteTable(tableId);
+        else {
+            wsDeleteTable(table.tables_id);
+        }
     };
 
     // Função para alterar o status da mesa
