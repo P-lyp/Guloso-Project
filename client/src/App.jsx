@@ -69,21 +69,8 @@ const App = () => {
                             mode="inline"
                             theme="light"
                             defaultSelectedKeys={["1"]}
-                        >
-                            {menuItensList.map((item) => (
-                                <Menu.Item
-                                    key={item.key}
-                                    icon={item.icon}
-                                    style={{
-                                        height: "100%",
-
-                                        color: "black",
-                                    }}
-                                >
-                                    <Link to={item.link}>{item.label}</Link>
-                                </Menu.Item>
-                            ))}
-                        </Menu>
+                            items={menuItensList}
+                        ></Menu>
                     </Sider>
                     <Content style={contentStyles}>
                         <Routes>

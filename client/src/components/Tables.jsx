@@ -86,8 +86,8 @@ const Tables = () => {
 
     // Ação quando clicar no botão X dos cards
     const closeTableFunction = (table) => {
-        // Verifica se a mesa está disponível. Se sim pode deletar, se não.. não....
-        if (table.tables_available === false) {
+        // Verifica se o status da mesa é diferente de disponível. Se sim pode deletar, se não.. não....
+        if (table.tablestatus_code !== "A") {
             console.log(
                 "opaaa kkk calma la paizao implementa um outro status ai de Pago ou Fechado rsrsrs"
             );
@@ -169,7 +169,7 @@ const Tables = () => {
                                       <CloseOutlined
                                           onClick={(e) => {
                                               e.stopPropagation();
-                                              closeTableFunction(table.tables_id);
+                                              closeTableFunction(table);
                                           }}
                                       />
                                   }
