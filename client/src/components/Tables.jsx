@@ -85,9 +85,15 @@ const Tables = () => {
     };
 
     // Ação quando clicar no botão X dos cards
-    const closeTableFunction = (tableId) => {
-        // Envia o id da mesa do card clicado pro backend solicitando a remoção da mesa
-        wsDeleteTable(tableId);
+    const closeTableFunction = (table) => {
+// Verifica se a mesa está disponível. Se sim pode deletar, se não.. não....
+        if (table.tables_available === false) {
+            console.log("opaaa kkk calma la paizao implementa um outro status ai de Pago ou Fechado rsrsrs")
+        }
+// Envia o id da mesa do card clicado pro backend solicitando a remoção da mesa
+        else {
+            wsDeleteTable(table.tables_id);
+        }
     };
 
     const changeTableStatus = () => {
@@ -111,96 +117,96 @@ const Tables = () => {
                 {/* SE LOADING FOR TRUE, CARREGA OS COMPONENTES DO SKELETON */}
                 {loading
                     ? Array.from({ length: 4 }).map((_, index) => (
-                          <Col
-                              key={index}
-                              span={6}
-                          >
-                              <Skeleton
-                                  active
-                                  title
-                              >
-                                  <Card loading />
-                              </Skeleton>
-                          </Col>
-                      ))
+                        <Col
+                            key={index}
+                            span={6}
+                        >
+                            <Skeleton
+                                active
+                                title
+                            >
+                                <Card loading />
+                            </Skeleton>
+                        </Col>
+                    ))
                     : //   QUANDO FINALIZAR O LOADING, RENDERIZA NORMALMENTE
-                      tables.map((table) => (
-                          <Col
-                              key={table.tables_id}
-                              span={6}
-                          >
-                              <Card
-                                  title={
-                                      <div
-                                          style={{
-                                              display: "flex",
-                                              justifyContent: "center",
-                                              alignItems: "center",
-                                          }}
-                                      >
-                                          <span style={{ fontSize: "24px" }}>
-                                              {table.tables_id}
-                                          </span>
-                                      </div>
-                                  }
-                                  onClick={() => handleCardClick(table)}
-                                  style={{
-                                      height: "44vh",
-                                      backgroundColor: "#fff",
-                                      border: "none",
-                                      //   borderColor: "#575757",
-                                      //   borderWidth: "0.4px",
-                                  }}
-                                  styles={cardStyles(table)}
-                                  hoverable={true}
-                                  bordered={false}
-                                  extra={
-                                      <CloseOutlined
-                                          onClick={(e) => {
-                                              e.stopPropagation();
-                                              closeTableFunction(table.tables_id);
-                                          }}
-                                      />
-                                  }
-                              >
-                                  <div
-                                      style={{
-                                          display: "flex",
-                                          height: "100%",
+                    tables.map((table) => (
+                        <Col
+                            key={table.tables_id}
+                            span={6}
+                        >
+                            <Card
+                                title={
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <span style={{ fontSize: "24px" }}>
+                                            {table.tables_id}
+                                        </span>
+                                    </div>
+                                }
+                                onClick={() => handleCardClick(table)}
+                                style={{
+                                    height: "44vh",
+                                    backgroundColor: "#fff",
+                                    border: "none",
+                                    //   borderColor: "#575757",
+                                    //   borderWidth: "0.4px",
+                                }}
+                                styles={cardStyles(table)}
+                                hoverable={true}
+                                bordered={false}
+                                extra={
+                                    <CloseOutlined
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            closeTableFunction(table);
+                                        }}
+                                    />
+                                }
+                            >
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        height: "100%",
 
-                                          flexDirection: "column",
-                                          justifyContent: "space-between",
-                                      }}
-                                  >
-                                      <Meta
-                                          style={{ display: "flex" }}
-                                          title={table.tables_available ? "Disponível" : "Ocupada"}
-                                      />
-                                      <div
-                                          style={{
-                                              display: "flex",
-                                              flexDirection: "row",
-                                              alignItems: "center",
-                                              justifyContent: "space-between",
-                                              width: "100%",
-                                          }}
-                                      >
-                                          <Button
-                                              shape="circle"
-                                              onClick={(e) => e.stopPropagation()}
-                                              icon={<EllipsisOutlined />}
-                                          />
-                                          <Button
-                                              shape="circle"
-                                              size="large"
-                                              onClick={(e) => e.stopPropagation()}
-                                              icon={<PlusOutlined />}
-                                          />
-                                      </div>
-                                  </div>
-                              </Card>
-                          </Col>
-                      ))}
+                                        flexDirection: "column",
+                                        justifyContent: "space-between",
+                                    }}
+                                >
+                                    <Meta
+                                        style={{ display: "flex" }}
+                                        title={table.tables_available ? "Disponível" : "Ocupada"}
+                                    />
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            justifyContent: "space-between",
+                                            width: "100%",
+                                        }}
+                                    >
+                                        <Button
+                                            shape="circle"
+                                            onClick={(e) => e.stopPropagation()}
+                                            icon={<EllipsisOutlined />}
+                                        />
+                                        <Button
+                                            shape="circle"
+                                            size="large"
+                                            onClick={(e) => e.stopPropagation()}
+                                            icon={<PlusOutlined />}
+                                        />
+                                    </div>
+                                </div>
+                            </Card>
+                        </Col>
+                    ))}
             </Row>
 
             <Modal
