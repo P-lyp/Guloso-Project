@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Layout, Menu } from "antd";
 import { layoutHeaderStyle, layoutFooterStyle } from "./styles";
 import PageTables from "./pages/PageTables";
+import PageMenu from "./pages/PageMenu";
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import { MdTableRestaurant } from "react-icons/md";
 import { IoRestaurant } from "react-icons/io5";
@@ -92,7 +93,7 @@ const App = () => {
                             <Route
                                 exact
                                 path="/menu"
-                                element={<span>oiiii</span>}
+                                element={<PageMenu />}
                             />
                         </Routes>
                     </Content>
