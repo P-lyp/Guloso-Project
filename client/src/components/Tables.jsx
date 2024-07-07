@@ -217,15 +217,17 @@ const Tables = () => {
                                               onClick={(e) => e.stopPropagation()}
                                               icon={<EllipsisOutlined />}
                                           />
-                                          <Button
-                                              shape="circle"
-                                              size="large"
-                                              onClick={(e) => {
-                                                  e.stopPropagation();
-                                                  handleNewOrder();
-                                              }}
-                                              icon={<PlusOutlined />}
-                                          />
+                                          {table.tablestatus_code !== "A" ? (
+                                              <Button
+                                                  shape="circle"
+                                                  size="large"
+                                                  onClick={(e) => {
+                                                      e.stopPropagation();
+                                                      handleNewOrder();
+                                                  }}
+                                                  icon={<PlusOutlined />}
+                                              />
+                                          ) : null}
                                       </div>
                                   </div>
                               </Card>
