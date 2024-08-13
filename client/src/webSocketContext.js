@@ -11,14 +11,6 @@ export const WebSocketProvider = ({ children }) => {
     useEffect(() => {
         const socketServer = io(server["local"]);
 
-        // socketServer.on("connect", () => {
-        //     console.log("WebSocket connected");
-        // });
-
-        // socketServer.on("disconnect", () => {
-        //     console.log("WebSocket disconnected");
-        // });
-
         setSocket(socketServer);
 
         return () => {
@@ -31,6 +23,10 @@ export const WebSocketProvider = ({ children }) => {
     //Recebe os dados das mesas
     const wsRefreshTablesData = (callback) => {
         socket?.on("refreshTablesData", callback);
+    };
+
+    const wsRequestMenu = (callback) => {
+        socket?.on("requestMenu", callback);
     };
 
     // Envia o ID da mesa para o backend consultar os pedidos
@@ -78,6 +74,7 @@ export const WebSocketProvider = ({ children }) => {
                 wsCreateTable,
                 wsDeleteTable,
                 wsChangeTableStatus,
+                wsRequestMenu,
             }}
         >
             {children}

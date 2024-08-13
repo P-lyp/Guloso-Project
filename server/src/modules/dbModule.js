@@ -25,6 +25,17 @@ export async function selectTableOrders(tableId) {
     return data;
 }
 
+export async function selectMenu() {
+    const { data, error } = await supabase.from("menu").select();
+
+    if (error) {
+        console.log(`ERRO AO CONSULTAR MENU ${error}`);
+        return;
+    }
+
+    return data;
+}
+
 export async function updateTableStatus(tableId, newTableStatus) {
     const { error } = await supabase
         .from("tables")
