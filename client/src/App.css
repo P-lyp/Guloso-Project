@@ -1,6 +1,20 @@
 body {
-    background-color: #F3EEEA;
-    font-family:Georgia, 'Times New Roman', Times, serif;
-    display: grid;
-    place-items: center;
+    font-family: Georgia, "Times New Roman", Times, serif;
 }
+
+.menu {
+    background-color: #fff;
+}
+
+/* .ant-layout-sider-children {
+    background-color: #f7f7f7;
+}  */
+
+/* .ant-menu-item svg,
+.ant-menu-item span {
+    transform: translate(-7px, 5px);
+}
+
+.ant-menu-item svg ::after {
+    transform: translate(7px, -5px);
+} */
