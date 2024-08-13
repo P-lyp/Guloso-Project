@@ -6,7 +6,6 @@ import {
     insertTable,
     deleteTable,
     sumTableOrders,
-    selectMenu,
 } from "./dbModule.js";
 
 export const handleConnection = async (socket, io) => {
@@ -15,16 +14,8 @@ export const handleConnection = async (socket, io) => {
     // Consulta o banco de dados e retorna as mesas
     async function RefreshTablesData() {
         const updatedTablesData = await selectTables();
-
         io.emit("refreshTablesData", updatedTablesData);
     }
-
-    async function requestMenu() {
-        const updatedMenu = await selectMenu();
-        return updatedMenu;
-    }
-
-    socket.emit("requestMenu", await requestMenu());
 
     // Recebe id da mesa pelo WS, consulta o pedidos no BD e envia pelo WS
     socket.on("sendTableOrdersId", async (tableId) => {

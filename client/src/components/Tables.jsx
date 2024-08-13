@@ -11,8 +11,6 @@ const Tables = () => {
     const [tables, setTables] = useState([]);
     const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
-    const [orderModalOpen, setOrderModalOpen] = useState(false);
-    const [menu, setMenu] = useState([]);
     const [orders, setOrders] = useState(null);
     const [totalOrdersValue, setTotalOrdersValue] = useState(0);
     const [selectedTable, setSelectedTable] = useState(null);
@@ -26,7 +24,6 @@ const Tables = () => {
         wsReceiveTableTotalAmountValue,
         wsDeleteTable,
         wsChangeTableStatus,
-        wsRequestMenu,
     } = useWebSocket();
 
     const fetchTables = () => {
@@ -74,17 +71,12 @@ const Tables = () => {
             //Envia o ID da mesa clicada e recebe o total dos pedidos
             requestTotalOrdersValue(selectedTable.id);
         }
-
-        wsRequestMenu((data) => {
-            setMenu(data);
-        });
     });
 
     // Lida com as ações quando clicar para fechar o modal
     const handleCancel = () => {
         // seta o estado do modal para true, fechando-o
         setModalOpen(false);
-        setOrderModalOpen(false);
         // limpa o state dos pedidos
         setOrders([]);
         // limpa o state do valor total dos pedidos
@@ -122,10 +114,6 @@ const Tables = () => {
         setTables(updatedTables);
 
         setSelectedTable({ ...selectedTable, statusCode: newTableStatus });
-    };
-
-    const handleNewOrder = () => {
-        setOrderModalOpen(true);
     };
 
     return (
@@ -217,17 +205,12 @@ const Tables = () => {
                                               onClick={(e) => e.stopPropagation()}
                                               icon={<EllipsisOutlined />}
                                           />
-                                          {table.tablestatus_code !== "A" ? (
-                                              <Button
-                                                  shape="circle"
-                                                  size="large"
-                                                  onClick={(e) => {
-                                                      e.stopPropagation();
-                                                      handleNewOrder();
-                                                  }}
-                                                  icon={<PlusOutlined />}
-                                              />
-                                          ) : null}
+                                          <Button
+                                              shape="circle"
+                                              size="large"
+                                              onClick={(e) => e.stopPropagation()}
+                                              icon={<PlusOutlined />}
+                                          />
                                       </div>
                                   </div>
                               </Card>
@@ -270,26 +253,6 @@ const Tables = () => {
                         <Button onClick={() => changeTableStatus("A")}>Desocupar</Button>
                     </>
                 )}
-            </Modal>
-
-            <Modal
-                title={`Selecionar pedido`}
-                open={orderModalOpen}
-                onCancel={handleCancel}
-                footer={null}
-            >
-                <List
-                    itemLayout="horizontal"
-                    dataSource={menu}
-                    renderItem={(menuItem) => (
-                        <List.Item>
-                            <List.Item.Meta
-                                title={`${menuItem.menu_name}`}
-                                description={`Valor: R$${menuItem.menu_price} - ID: ${menuItem.menu_id}`}
-                            />
-                        </List.Item>
-                    )}
-                />
             </Modal>
         </>
     );
