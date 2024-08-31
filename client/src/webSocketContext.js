@@ -26,7 +26,7 @@ export const WebSocketProvider = ({ children }) => {
     };
 
     const wsRequestMenu = (callback) => {
-        socket?.on("requestMenu", callback);
+        socket?.on("refreshMenuData", callback);
     };
 
     // Envia o ID da mesa para o backend consultar os pedidos
@@ -37,6 +37,10 @@ export const WebSocketProvider = ({ children }) => {
     // Recebe os pedidos das mesas
     const wsReceiveTableOrders = (callback) => {
         socket?.on("receiveTableOrders", callback);
+    };
+
+    const wsSendOrders = (tableId, menuIdArray) => {
+        socket?.emit("sendOrders", tableId, menuIdArray);
     };
 
     // Envia o ID da mesa para o backend consultar o valor total dos pedidos
@@ -75,6 +79,7 @@ export const WebSocketProvider = ({ children }) => {
                 wsDeleteTable,
                 wsChangeTableStatus,
                 wsRequestMenu,
+                wsSendOrders,
             }}
         >
             {children}
