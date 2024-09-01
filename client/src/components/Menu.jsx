@@ -1,68 +1,112 @@
-import { Table } from "antd";
+import { Table, Modal, Form, Input } from "antd";
 import { useWebSocket } from "../webSocketContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Menu = () => {
-    const [menuData, setMenuData] = useState();
+  const { wsRequestMenu } = useWebSocket();
+  const [menu, setMenu] = useState([]);
+  const [modalMenuOpen, setModalMenuOpen] = useState(false);
+  const [recordRow, setRecordRow] = useState(null);
+  const [formValues, setFormValues] = useState({
+    menu_id: "",
+    menu_name: "",
+    menu_price: "",
+  });
 
-    const wsRequestMenu = useWebSocket();
-
+  useEffect(() => {
     wsRequestMenu((data) => {
-        setMenuData(menuData);
-        console.log(data);
+      setMenu(data);
     });
+  }, [wsRequestMenu]);
 
-    const column = [
-        {
-            title: "ID",
-            dataIndex: "ID",
-            key: "ID",
-        },
-        {
-            title: "Nome",
-            dataIndex: "nome",
-            key: "nome",
-        },
-        {
-            title: "Preço",
-            dataIndex: "preco",
-            key: "preco",
-        },
-    ];
+  useEffect(() => {
+    if (recordRow) {
+      setFormValues({
+        menu_id: recordRow.menu_id,
+        menu_name: recordRow.menu_name,
+        menu_price: recordRow.menu_price,
+      });
+    }
+  }, [recordRow]);
 
-    const dataSource = [
-        {
-            ID: "1",
-            nome: "Pao com lama",
-            preco: 32,
-        },
-        {
-            ID: "2",
-            nome: "Pao com lama",
-            preco: 32,
-        },
-        {
-            ID: "3",
-            nome: "Pao com lama",
-            preco: 32,
-        },
-        {
-            ID: "4",
-            nome: "Pao com lama",
-            preco: 32,
-        },
-        {
-            ID: "5",
-            nome: "Pao com lama",
-            preco: 32,
-        },
-    ];
-    return (
-        <Table
-            columns={column}
-            dataSource={dataSource}
-        />
-    );
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues({
+      ...formValues,
+      [name]: value,
+    });
+  };
+
+  const column = [
+    {
+      title: "ID",
+      dataIndex: "menu_id",
+      key: "menu_id",
+    },
+    {
+      title: "Nome",
+      dataIndex: "menu_name",
+      key: "menu_name",
+    },
+    {
+      title: "Preço",
+      dataIndex: "menu_price",
+      key: "menu_price",
+    },
+  ];
+
+  return (
+    <>
+      <Table
+        columns={column}
+        dataSource={menu}
+        rowKey="menu_id"
+        size="large"
+        onRow={(record) => {
+          return {
+            onClick: () => {
+              setModalMenuOpen(true);
+              setRecordRow(record);
+            },
+          };
+        }}
+      />
+      {recordRow && (
+        <Modal
+          open={modalMenuOpen}
+          okText="Salvar"
+          onOk={() => setModalMenuOpen(false)}
+          onCancel={() => setModalMenuOpen(false)}
+          title={formValues.menu_name}
+          closable={false}
+        >
+          <Form layout="vertical">
+            <Form.Item label="ID:">
+              <Input
+                disabled={true}
+                name="menu_id"
+                value={formValues.menu_id}
+              />
+            </Form.Item>
+            <Form.Item label="Nome:">
+              <Input
+                name="menu_name"
+                value={formValues.menu_name}
+                onChange={handleInputChange}
+              />
+            </Form.Item>
+            <Form.Item label="Preço:">
+              <Input
+                name="menu_price"
+                value={formValues.menu_price}
+                onChange={handleInputChange}
+              />
+            </Form.Item>
+          </Form>
+        </Modal>
+      )}
+    </>
+  );
 };
 
 export default Menu;

@@ -182,6 +182,7 @@ const Tables = () => {
                           <Col
                               key={table.tables_id}
                               span={6}
+                              xs={24} sm={12} md={8} lg={6}
                           >
                               <Card
                                   title={
