@@ -1,8 +1,8 @@
 // src/components/Tables.js
 import { useEffect, useState } from "react";
-import { Card, Col, Row, Modal, List, Skeleton, Button } from "antd";
+import { Card, Col, Row, Modal, List, Skeleton, Button, InputNumber } from "antd";
 import { useWebSocket } from "../webSocketContext";
-import { CloseOutlined, EllipsisOutlined, PlusOutlined } from "@ant-design/icons";
+import { CloseOutlined, EllipsisOutlined, PlusOutlined, CheckOutlined } from "@ant-design/icons";
 import { cardStyles } from "../styles";
 
 const { Meta } = Card;
@@ -10,12 +10,17 @@ const { Meta } = Card;
 const Tables = () => {
     const [tables, setTables] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [orderLoading, setOrderLoading] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [orderModalOpen, setOrderModalOpen] = useState(false);
     const [menu, setMenu] = useState([]);
     const [orders, setOrders] = useState(null);
     const [totalOrdersValue, setTotalOrdersValue] = useState(0);
     const [selectedTable, setSelectedTable] = useState(null);
+
+    const [selectedItems, setSelectedItems] = useState([]);
+
+    const [quantities, setQuantities] = useState([0]);
 
     // Importa as funções de ws
     const {
@@ -27,6 +32,7 @@ const Tables = () => {
         wsDeleteTable,
         wsChangeTableStatus,
         wsRequestMenu,
+        wsSendOrders,
     } = useWebSocket();
 
     const fetchTables = () => {
@@ -71,6 +77,7 @@ const Tables = () => {
             };
             //Envia o ID da mesa clicada e recebe os pedidos
             requestTableOrders(selectedTable.id);
+
             //Envia o ID da mesa clicada e recebe o total dos pedidos
             requestTotalOrdersValue(selectedTable.id);
         }
@@ -124,8 +131,32 @@ const Tables = () => {
         setSelectedTable({ ...selectedTable, statusCode: newTableStatus });
     };
 
-    const handleNewOrder = () => {
+    const openMenuList = () => {
         setOrderModalOpen(true);
+    };
+
+    const handleChooseOrder = (menuItem) => {
+        console.log(`Pedido escolhido: ${menuItem.menu_name}`);
+        // setOrderLoading(false);
+
+        if (selectedItems.includes(menuItem.menu_id)) {
+            setSelectedItems(selectedItems.filter((item) => item !== menuItem.menu_id));
+        } else {
+            setSelectedItems([...selectedItems, menuItem.menu_id]);
+        }
+    };
+
+    const handleSendOrders = () => {
+        setOrderLoading(true);
+        // Adiciona um atraso de 3 segundos
+        // setTimeout(() => {
+        //     setOrderLoading(false);
+        // }, 2000);
+
+        wsSendOrders(selectedTable.id, selectedItems);
+
+        setSelectedItems([]);
+        setOrderModalOpen(false);
     };
 
     return (
@@ -151,6 +182,7 @@ const Tables = () => {
                           <Col
                               key={table.tables_id}
                               span={6}
+                              xs={24} sm={12} md={8} lg={6}
                           >
                               <Card
                                   title={
@@ -217,17 +249,17 @@ const Tables = () => {
                                               onClick={(e) => e.stopPropagation()}
                                               icon={<EllipsisOutlined />}
                                           />
-                                          {table.tablestatus_code !== "A" ? (
+                                          {/* {table.tablestatus_code !== "A" ? (
                                               <Button
                                                   shape="circle"
                                                   size="large"
                                                   onClick={(e) => {
                                                       e.stopPropagation();
-                                                      handleNewOrder();
+                                                      openMenuList();
                                                   }}
                                                   icon={<PlusOutlined />}
                                               />
-                                          ) : null}
+                                          ) : null} */}
                                       </div>
                                   </div>
                               </Card>
@@ -252,7 +284,7 @@ const Tables = () => {
                             itemLayout="horizontal"
                             dataSource={orders}
                             renderItem={(order) => (
-                                <List.Item>
+                                <List.Item key={order.order_id}>
                                     <List.Item.Meta
                                         title={`Pedido ${order.order_id}`}
                                         description={`Valor: R$${order.order_totalamount} - Horário: ${order.order_time}`}
@@ -263,11 +295,23 @@ const Tables = () => {
 
                         <p>Valor total dos pedidos: R${totalOrdersValue.total_orders_value}</p>
                         <Button onClick={() => changeTableStatus("A")}>Desocupar</Button>
+                        <Button
+                            shape="circle"
+                            size="large"
+                            onClick={openMenuList}
+                            icon={<PlusOutlined />}
+                        />
                     </>
                 ) : (
                     <>
                         <p>Sem pedidos</p>
                         <Button onClick={() => changeTableStatus("A")}>Desocupar</Button>
+                        <Button
+                            shape="circle"
+                            size="large"
+                            onClick={openMenuList}
+                            icon={<PlusOutlined />}
+                        />
                     </>
                 )}
             </Modal>
@@ -276,13 +320,32 @@ const Tables = () => {
                 title={`Selecionar pedido`}
                 open={orderModalOpen}
                 onCancel={handleCancel}
-                footer={null}
+                footer={[
+                    <div style={{ position: "sticky" }}>
+                        <Button
+                            shape="circle"
+                            icon={<CheckOutlined hoverable />}
+                            loading={orderLoading}
+                            onClick={handleSendOrders}
+                        />
+                    </div>,
+                ]}
             >
                 <List
                     itemLayout="horizontal"
                     dataSource={menu}
-                    renderItem={(menuItem) => (
-                        <List.Item>
+                    renderItem={(menuItem, index) => (
+                        <List.Item
+                            key={menuItem.menu_id}
+                            actions={[
+                                <InputNumber
+                                    value={quantities[index]}
+                                    onStep={setQuantities[index]}
+                                    variant="filled"
+                                    // onClick={handleChooseOrder(menuItem)}
+                                />,
+                            ]}
+                        >
                             <List.Item.Meta
                                 title={`${menuItem.menu_name}`}
                                 description={`Valor: R$${menuItem.menu_price} - ID: ${menuItem.menu_id}`}
