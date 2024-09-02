@@ -14,7 +14,7 @@ import { contentStyles } from "./styles";
 
 const { Header, Content, Footer, Sider } = Layout;
 
-const LayoutComponent = () => {
+const App = () => {
     const [collapsed, setCollapsed] = useState(true);
     const location = useLocation(); // Aqui useLocation pode ser usado corretamente
 
