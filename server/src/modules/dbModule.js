@@ -25,11 +25,42 @@ export async function selectTableOrders(tableId) {
     return data;
 }
 
-export async function selectMenu() {
-    const { data, error } = await supabase.from("menu").select();
+// export async function selectMenu() {
+//     const { data, error } = await supabase.from("menu").select();
+
+//     if (error) {
+//         console.log(`ERRO AO CONSULTAR MENU ${error}`);
+//         return;
+//     }
+
+//     return data;
+// }
+
+export async function insertMenuItem(menuName, menuPrice) {
+    const { data, error } = await supabase.from("menu").insert({
+        menu_name: menuName,
+        menu_price: menuPrice,
+    });
 
     if (error) {
-        console.log(`ERRO AO CONSULTAR MENU ${error}`);
+        console.log(`ERRO AO INSERIR MENU ${error}`);
+        return;
+    }
+
+    return data;
+}
+
+export async function updateMenuItem(menuName, menuPrice, menuId) {
+    const { data, error } = await supabase
+        .from("menu")
+        .update({
+            menu_name: menuName,
+            menu_price: menuPrice,
+        })
+        .eq("menu_id", menuId);
+
+    if (error) {
+        console.log(`ERRO AO ATUALIZAR MENU ${error}`);
         return;
     }
 

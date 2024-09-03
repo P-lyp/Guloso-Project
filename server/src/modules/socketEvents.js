@@ -7,6 +7,7 @@ import {
     deleteTable,
     sumTableOrders,
     selectMenu,
+    insertMenuItem,
 } from "./dbModule.js";
 
 export const handleConnection = async (socket, io) => {
@@ -70,7 +71,14 @@ export const handleConnection = async (socket, io) => {
         console.log(`Usuário desconectado`);
     });
 
-    const updateMenuData = await selectMenu();
+    async function refreshMenuData() {
+        const updateMenuData = await selectMenu();
+        io.emit("refreshMenuData", updateMenuData);
+    }
 
-    io.emit("refreshMenuData", updateMenuData);
+    socket.on("sendMenuItem", async (menuName, menuPrice) => {
+        console.log(menuName);
+        await insertMenuItem(menuName, menuPrice);
+        refreshMenuData();
+    });
 };

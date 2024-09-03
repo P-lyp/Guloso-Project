@@ -9,7 +9,7 @@ export const WebSocketProvider = ({ children }) => {
     const [socket, setSocket] = useState(null);
 
     useEffect(() => {
-        const socketServer = io(server["local"]);
+        const socketServer = io(server["online"]);
 
         setSocket(socketServer);
 
@@ -67,6 +67,10 @@ export const WebSocketProvider = ({ children }) => {
         socket?.emit("changeTableStatus", tableId, newTableStatus);
     };
 
+    const wsInsertMenuItem = (menuName, menuPrice) => {
+        socket?.emit("sendMenuItem", menuName, menuPrice);
+    };
+
     return (
         <webSocketContext.Provider
             value={{
@@ -80,6 +84,7 @@ export const WebSocketProvider = ({ children }) => {
                 wsChangeTableStatus,
                 wsRequestMenu,
                 wsSendOrders,
+                wsInsertMenuItem,
             }}
         >
             {children}
