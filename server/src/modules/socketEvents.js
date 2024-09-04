@@ -7,7 +7,6 @@ import {
     deleteTable,
     sumTableOrders,
     selectMenu,
-    insertMenuItem,
     updateMenuItem,
 } from "./dbModule.js";
 
