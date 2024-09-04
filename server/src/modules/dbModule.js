@@ -25,39 +25,43 @@ export async function selectTableOrders(tableId) {
     return data;
 }
 
-// export async function selectMenu() {
-//     const { data, error } = await supabase.from("menu").select();
-
-//     if (error) {
-//         console.log(`ERRO AO CONSULTAR MENU ${error}`);
-//         return;
-//     }
-
-//     return data;
-// }
-
-export async function insertMenuItem(menuName, menuPrice) {
-    const { data, error } = await supabase.from("menu").insert({
-        menu_name: menuName,
-        menu_price: menuPrice,
-    });
+export async function selectMenu() {
+    const { data, error } = await supabase.from("menu").select("*").order("menu_id");
 
     if (error) {
-        console.log(`ERRO AO INSERIR MENU ${error}`);
+        console.log(`ERRO AO CONSULTAR MENU ${error}`);
         return;
     }
 
     return data;
 }
+// WIP
+// export async function insertMenuItem(menuItem) {
+//     console.log(menuItem.menu_id, menuItem.menu_name, menuItem.menu_price);
 
-export async function updateMenuItem(menuName, menuPrice, menuId) {
+//     const { data, error } = await supabase.from("menu").insert({
+//         menu_id: menuItem.menuId,
+//         menu_name: menuItem.menu_name,
+//         menu_price: menuItem.menuPrice,
+//     });
+
+//     if (error) {
+//         console.log(`ERRO AO INSERIR MENU ${error}`);
+//         return;
+//     }
+//     return data;
+// }
+
+export async function updateMenuItem(menuItem) {
+    console.log(menuItem.menu_id, menuItem.menu_name, menuItem.menu_price);
+
     const { data, error } = await supabase
         .from("menu")
         .update({
-            menu_name: menuName,
-            menu_price: menuPrice,
+            menu_name: menuItem.menu_name,
+            menu_price: menuItem.menu_price,
         })
-        .eq("menu_id", menuId);
+        .eq("menu_id", menuItem.menu_id);
 
     if (error) {
         console.log(`ERRO AO ATUALIZAR MENU ${error}`);

@@ -31,7 +31,7 @@ const Tables = () => {
         wsReceiveTableTotalAmountValue,
         wsDeleteTable,
         wsChangeTableStatus,
-        wsRequestMenu,
+        wsRefreshMenuData,
         wsSendOrders,
     } = useWebSocket();
 
@@ -82,7 +82,7 @@ const Tables = () => {
             requestTotalOrdersValue(selectedTable.id);
         }
 
-        wsRequestMenu((data) => {
+        wsRefreshMenuData((data) => {
             setMenu(data);
         });
     });
@@ -182,7 +182,10 @@ const Tables = () => {
                           <Col
                               key={table.tables_id}
                               span={6}
-                              xs={24} sm={12} md={8} lg={6}
+                              xs={24}
+                              sm={12}
+                              md={8}
+                              lg={6}
                           >
                               <Card
                                   title={

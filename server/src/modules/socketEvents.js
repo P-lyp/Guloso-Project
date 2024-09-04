@@ -8,10 +8,12 @@ import {
     sumTableOrders,
     selectMenu,
     insertMenuItem,
+    updateMenuItem,
 } from "./dbModule.js";
 
 export const handleConnection = async (socket, io) => {
     RefreshTablesData();
+    refreshMenuData();
 
     // Consulta o banco de dados e retorna as mesas
     async function RefreshTablesData() {
@@ -20,12 +22,10 @@ export const handleConnection = async (socket, io) => {
         io.emit("refreshTablesData", updatedTablesData);
     }
 
-    // async function requestMenu() {
-    //     const updatedMenu = await selectMenu();
-    //     return updatedMenu;
-    // }
-
-    // socket.emit("requestMenu", await requestMenu());
+    async function refreshMenuData() {
+        const updatedMenu = await selectMenu();
+        io.emit("refreshMenuData", updatedMenu);
+    }
 
     // Recebe id da mesa pelo WS, consulta o pedidos no BD e envia pelo WS
     socket.on("sendTableOrdersId", async (tableId) => {
@@ -71,14 +71,14 @@ export const handleConnection = async (socket, io) => {
         console.log(`Usuário desconectado`);
     });
 
-    async function refreshMenuData() {
-        const updateMenuData = await selectMenu();
-        io.emit("refreshMenuData", updateMenuData);
-    }
+    // WIP
+    // socket.on("sendMenuItem", async (menuItem) => {
+    //     await insertMenuItem(menuItem);
+    //     refreshMenuData();
+    // });
 
-    socket.on("sendMenuItem", async (menuName, menuPrice) => {
-        console.log(menuName);
-        await insertMenuItem(menuName, menuPrice);
+    socket.on("updateMenuItem", async (menuItem) => {
+        await updateMenuItem(menuItem);
         refreshMenuData();
     });
 };

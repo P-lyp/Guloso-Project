@@ -3,7 +3,7 @@ import { useWebSocket } from "../webSocketContext";
 import { useState, useEffect } from "react";
 
 const Menu = () => {
-    const { wsRequestMenu, wsInsertMenuItem } = useWebSocket();
+    const { wsRefreshMenuData, wsUpdateMenuItem } = useWebSocket();
     const [menu, setMenu] = useState([]);
     const [modalMenuOpen, setModalMenuOpen] = useState(false);
     const [recordRow, setRecordRow] = useState(null);
@@ -13,11 +13,15 @@ const Menu = () => {
         menu_price: "",
     });
 
-    useEffect(() => {
-        wsRequestMenu((data) => {
+    const fetchMenuData = () => {
+        wsRefreshMenuData((data) => {
             setMenu(data);
         });
-    }, [wsRequestMenu]);
+    };
+
+    useEffect(() => {
+        fetchMenuData();
+    });
 
     useEffect(() => {
         if (recordRow) {
@@ -35,6 +39,12 @@ const Menu = () => {
             ...formValues,
             [name]: value,
         });
+    };
+
+    const handleModalOk = () => {
+        console.log(formValues);
+        wsUpdateMenuItem(formValues);
+        setModalMenuOpen(false);
     };
 
     const column = [
@@ -75,7 +85,7 @@ const Menu = () => {
                 <Modal
                     open={modalMenuOpen}
                     okText="Salvar"
-                    onOk={() => setModalMenuOpen(false)}
+                    onOk={() => handleModalOk()}
                     onCancel={() => setModalMenuOpen(false)}
                     title={formValues.menu_name}
                     closable={false}

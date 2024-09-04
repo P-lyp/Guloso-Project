@@ -9,7 +9,7 @@ export const WebSocketProvider = ({ children }) => {
     const [socket, setSocket] = useState(null);
 
     useEffect(() => {
-        const socketServer = io(server["online"]);
+        const socketServer = io(server["local"]);
 
         setSocket(socketServer);
 
@@ -25,7 +25,7 @@ export const WebSocketProvider = ({ children }) => {
         socket?.on("refreshTablesData", callback);
     };
 
-    const wsRequestMenu = (callback) => {
+    const wsRefreshMenuData = (callback) => {
         socket?.on("refreshMenuData", callback);
     };
 
@@ -67,8 +67,13 @@ export const WebSocketProvider = ({ children }) => {
         socket?.emit("changeTableStatus", tableId, newTableStatus);
     };
 
-    const wsInsertMenuItem = (menuName, menuPrice) => {
-        socket?.emit("sendMenuItem", menuName, menuPrice);
+    // WIP
+    // const wsInsertMenuItem = (menuItem) => {
+    //     socket?.emit("sendMenuItem", menuItem);
+    // };
+
+    const wsUpdateMenuItem = (menuItem) => {
+        socket?.emit("updateMenuItem", menuItem);
     };
 
     return (
@@ -82,9 +87,10 @@ export const WebSocketProvider = ({ children }) => {
                 wsCreateTable,
                 wsDeleteTable,
                 wsChangeTableStatus,
-                wsRequestMenu,
+                wsRefreshMenuData,
                 wsSendOrders,
-                wsInsertMenuItem,
+
+                wsUpdateMenuItem,
             }}
         >
             {children}
