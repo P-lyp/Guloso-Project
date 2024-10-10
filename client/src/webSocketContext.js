@@ -9,7 +9,7 @@ export const WebSocketProvider = ({ children }) => {
     const [socket, setSocket] = useState(null);
 
     useEffect(() => {
-        const socketServer = io(server["online"]);
+        const socketServer = io(server["local"]);
 
         setSocket(socketServer);
 

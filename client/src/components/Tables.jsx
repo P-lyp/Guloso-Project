@@ -5,6 +5,9 @@ import { useWebSocket } from "../webSocketContext";
 import { CloseOutlined, EllipsisOutlined, PlusOutlined, CheckOutlined } from "@ant-design/icons";
 import { cardStyles } from "../styles";
 
+import TableModal from "./TableModal";
+import OrderModal from "./OrderModal";
+
 const { Meta } = Card;
 
 const Tables = () => {
@@ -159,6 +162,13 @@ const Tables = () => {
         setOrderModalOpen(false);
     };
 
+    const tableStatusMap = {
+        A: "Disponível",
+        T: "Ocupada",
+        O: "Pedido",
+        P: "Pago",
+    };
+
     return (
         <>
             <Row gutter={[22, 40]}>
@@ -233,9 +243,7 @@ const Tables = () => {
                                       <Meta
                                           style={{ display: "flex" }}
                                           title={
-                                              table.tablestatus_code === "A"
-                                                  ? "Disponível"
-                                                  : "Ocupada"
+                                              tableStatusMap[table.tablestatus_code] || "Indefinido"
                                           }
                                       />
                                       <div
@@ -252,17 +260,6 @@ const Tables = () => {
                                               onClick={(e) => e.stopPropagation()}
                                               icon={<EllipsisOutlined />}
                                           />
-                                          {/* {table.tablestatus_code !== "A" ? (
-                                              <Button
-                                                  shape="circle"
-                                                  size="large"
-                                                  onClick={(e) => {
-                                                      e.stopPropagation();
-                                                      openMenuList();
-                                                  }}
-                                                  icon={<PlusOutlined />}
-                                              />
-                                          ) : null} */}
                                       </div>
                                   </div>
                               </Card>
@@ -270,93 +267,25 @@ const Tables = () => {
                       ))}
             </Row>
 
-            <Modal
-                title={`Dados da Mesa`}
+            <TableModal
                 open={modalOpen}
                 onCancel={handleCancel}
-                footer={null}
-            >
-                {selectedTable && selectedTable.statusCode === "A" ? (
-                    <>
-                        <p>Mesa disponível</p>
-                        <Button onClick={() => changeTableStatus("T")}>Ocupar</Button>
-                    </>
-                ) : orders && orders.length > 0 ? (
-                    <>
-                        <List
-                            itemLayout="horizontal"
-                            dataSource={orders}
-                            renderItem={(order) => (
-                                <List.Item key={order.order_id}>
-                                    <List.Item.Meta
-                                        title={`Pedido ${order.order_id}`}
-                                        description={`Valor: R$${order.order_totalamount} - Horário: ${order.order_time}`}
-                                    />
-                                </List.Item>
-                            )}
-                        />
+                selectedTable={selectedTable}
+                orders={orders}
+                totalOrdersValue={totalOrdersValue}
+                changeTableStatus={changeTableStatus}
+                openMenuList={openMenuList}
+            />
 
-                        <p>Valor total dos pedidos: R${totalOrdersValue.total_orders_value}</p>
-                        <Button onClick={() => changeTableStatus("A")}>Desocupar</Button>
-                        <Button
-                            shape="circle"
-                            size="large"
-                            onClick={openMenuList}
-                            icon={<PlusOutlined />}
-                        />
-                    </>
-                ) : (
-                    <>
-                        <p>Sem pedidos</p>
-                        <Button onClick={() => changeTableStatus("A")}>Desocupar</Button>
-                        <Button
-                            shape="circle"
-                            size="large"
-                            onClick={openMenuList}
-                            icon={<PlusOutlined />}
-                        />
-                    </>
-                )}
-            </Modal>
-
-            <Modal
-                title={`Selecionar pedido`}
+            <OrderModal
                 open={orderModalOpen}
                 onCancel={handleCancel}
-                footer={[
-                    <div style={{ position: "sticky" }}>
-                        <Button
-                            shape="circle"
-                            icon={<CheckOutlined hoverable />}
-                            loading={orderLoading}
-                            onClick={handleSendOrders}
-                        />
-                    </div>,
-                ]}
-            >
-                <List
-                    itemLayout="horizontal"
-                    dataSource={menu}
-                    renderItem={(menuItem, index) => (
-                        <List.Item
-                            key={menuItem.menu_id}
-                            actions={[
-                                <InputNumber
-                                    value={quantities[index]}
-                                    onStep={setQuantities[index]}
-                                    variant="filled"
-                                    // onClick={handleChooseOrder(menuItem)}
-                                />,
-                            ]}
-                        >
-                            <List.Item.Meta
-                                title={`${menuItem.menu_name}`}
-                                description={`Valor: R$${menuItem.menu_price} - ID: ${menuItem.menu_id}`}
-                            />
-                        </List.Item>
-                    )}
-                />
-            </Modal>
+                menu={menu}
+                quantities={quantities}
+                setQuantities={setQuantities}
+                orderLoading={orderLoading}
+                handleSendOrders={handleSendOrders}
+            />
         </>
     );
 };
